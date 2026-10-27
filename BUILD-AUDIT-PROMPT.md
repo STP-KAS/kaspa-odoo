@@ -5,6 +5,7 @@
 **Goal:** repeat TN10 ops2's exercise independently. Open every source yourself and form your own conclusions. Do not rely on the README's wording as evidence.
 
 **Rules**
+- Keep the README's disclaimer (the block quote under the intro line) exactly as it is. Do not change, move or remove it.
 - Facts only. Every statement needs a source link, preferably a primary one.
 - Professional and neutral. No marketing, no emotion, no price talk.
 - No secrets. No tags or releases. No force push. Only this repo. Do not post anywhere, and do not contact RRM, Odoo or the Kaspa Dollar team.
