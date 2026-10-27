@@ -1,180 +1,109 @@
 # Kaspa and Odoo
 
-Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA or the Kaspa developers. Each statement links to its source. Review notes: [Audits](#audits).
+Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA or the Kaspa developers. Each statement links to its source.
 
 > **Disclaimer.** The author is not a Kaspa contributor and does not take part in Kaspa development in any way. They are an interested individual who tests on Kaspa's testnet. Kaspa is open source ([official Kaspa GitHub organization](https://github.com/kaspanet)) and decentralized: anyone can build on it.
 
+**Why this exists.** The author's brother runs a small restaurant company that is an Odoo customer. That is why the author wanted to look at how Kaspa could potentially help Odoo.
+
 ## Summary
 
-Kaspa is a proof-of-work blockDAG producing 10 blocks per second on mainnet. Odoo's community code (branches 18.0, 19.0 and 20.0) contains no Kaspa integration and no crypto-asset payment provider. Of seven use cases compared, three are gaps (a KAS payment provider, transfers between subsidiaries, document signing); Sign and Documents are Enterprise-only on Odoo's editions page. In the other four (multi-currency invoicing, journal hashes, lot traceability, e-invoicing) Odoo already handles the function, and Kaspa could add an independent external timestamp. KAS uses 8 decimals, which Odoo's 6-digit currency rounding field cannot represent. Details and sources: [Comparison](#comparison-with-odoo-modules), [Findings](#findings).
+Odoo is a Belgian, open-core suite of business applications ([about](https://www.odoo.com/page/about-us)). Kaspa is a proof-of-work blockDAG producing 10 blocks per second on mainnet ([KIP-14](https://github.com/kaspanet/kips/blob/master/kip-0014.md), [kaspa.org/lore](https://kaspa.org/lore)). Odoo's community code (branches 18.0, 19.0, 20.0) contains no Kaspa integration and no crypto-asset payment provider. Odoo already handles invoicing, journal inalterability, traceability and e-invoicing locally; Kaspa could add an external payment rail and independent public timestamps. KAS uses 8 decimals ([`SOMPI_PER_KASPA`](https://github.com/kaspanet/rusty-kaspa/blob/master/consensus/core/src/constants.rs)), which Odoo's 6-digit currency rounding cannot represent. Any integration is best evaluated and provided by Odoo itself.
 
-Kaspa core: [github.com/kaspanet](https://github.com/kaspanet). Reliable sources: [kaspa.org](https://kaspa.org), [docs.kaspa.org](https://docs.kaspa.org), [research.kas.pa](https://research.kas.pa), [qa.kas.pa](https://qa.kas.pa/), [Kaspa Discord](https://discord.gg/kaspa), [t.me/kasparnd](https://t.me/kasparnd), [kaspa.news](https://kaspa.news), [Kaspa Explained](https://kaspaexplained.com/status) (sources checked 6 Oct 2026; still lists KCC-20 as Draft, while [kcc-0020.md](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md) says Final).
+Kaspa core: [github.com/kaspanet](https://github.com/kaspanet). Reliable sources: [kaspa.org](https://kaspa.org), [docs.kaspa.org](https://docs.kaspa.org), [research.kas.pa](https://research.kas.pa), [qa.kas.pa](https://qa.kas.pa/), [Kaspa Discord](https://discord.gg/kaspa), [t.me/kasparnd](https://t.me/kasparnd), [kaspa.news](https://kaspa.news), [Kaspa Explained](https://kaspaexplained.com/status).
 
-## What
+## Odoo
 
-**Kaspa** is a proof-of-work blockDAG running at 10 blocks per second on mainnet since the Crescendo upgrade ([KIP-14](https://github.com/kaspanet/kips/blob/master/kip-0014.md), [kaspa.org/lore](https://kaspa.org/lore)). The reference node is Rusty Kaspa ([kaspanet/rusty-kaspa](https://github.com/kaspanet/rusty-kaspa)). Mainnet launched in November 2021 with no premine ([kaspa.org](https://kaspa.org), [kaspa.org/lore](https://kaspa.org/lore)). Transactions can be inspected on public explorers such as [kaspa.stream](https://kaspa.stream).
-
-**Odoo** is an ERP system with an open-source community edition, developed by Odoo SA (Belgium) ([odoo.com](https://www.odoo.com)). It has an app store ([apps.odoo.com](https://apps.odoo.com)) and pluggable payment providers ([docs](https://www.odoo.com/documentation/18.0/applications/finance/payment_providers.html)).
-
-## Comparison with Odoo modules
-
-Basis: Odoo community source at [github.com/odoo/odoo](https://github.com/odoo/odoo), branch 19.0, with the 18.0 and 20.0 addon directories checked through the GitHub API on 27 Oct 2026 (20.0 is the default branch). Status is binary: **Gap** (no community module covers it) or **Handled by Odoo** (Odoo handles it locally). The "Kaspa adds" column states what an external Kaspa record could add; none of it is implemented. Sign and Documents are marked Enterprise-only on the [editions page](https://www.odoo.com/page/editions). The inter-company documentation does not name an edition.
-
-| Use case | Existing Odoo (community) | Status | Kaspa adds |
-|---|---|---|---|
-| Receiving payments | [`payment`](https://github.com/odoo/odoo/tree/19.0/addons/payment) framework plus 23 `payment_*` modules on 19.0 (also 23 on 20.0) and 17 on 18.0, e.g. [`payment_stripe`](https://github.com/odoo/odoo/tree/19.0/addons/payment_stripe), [`payment_mollie`](https://github.com/odoo/odoo/tree/19.0/addons/payment_mollie), [`payment_custom`](https://github.com/odoo/odoo/blob/19.0/addons/payment_custom/__manifest__.py). None is a crypto-asset provider. | Gap | A `payment_*` provider for KAS. None exists in the community tree, and an Apps-store search for `kaspa` did not list one. |
-| Multi-currency invoicing and reconciliation (fiat) | `rounding` with `digits=(12, 6)` and computed `decimal_places` in [`res_currency.py`](https://github.com/odoo/odoo/blob/19.0/odoo/addons/base/models/res_currency.py) (lines 37–40, 162–168); [`account_partial_reconcile.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_partial_reconcile.py), [`account_reconcile_model.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_reconcile_model.py) | Handled by Odoo | KAS has 8 decimals (1 KAS = 10^8 sompi, [`SOMPI_PER_KASPA`](https://github.com/kaspanet/rusty-kaspa/blob/master/consensus/core/src/constants.rs)), which the 6-digit rounding field cannot represent. Matching on-chain payments to invoices is not implemented. |
-| EU e-invoicing | [`account_edi_ubl_cii`](https://github.com/odoo/odoo/tree/19.0/addons/account_edi_ubl_cii), [`account_peppol`](https://github.com/odoo/odoo/tree/19.0/addons/account_peppol) | Handled by Odoo | Optional external timestamp of an invoice hash. Peppol remains the regulated channel. |
-| Inalterability of journal entries | `secure_sequence_number` and `inalterable_hash` in [`account_move.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_move.py) (lines 354–355); `restrict_mode_hash_table` in [`account_journal.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_journal.py) (line 145); [`account_secure_entries_wizard.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/wizard/account_secure_entries_wizard.py); [`l10n_fr_account`](https://github.com/odoo/odoo/tree/19.0/addons/l10n_fr_account) | Handled by Odoo | The hash chain stays in the Odoo database. Anchoring a hash on Kaspa would add an independently verifiable timestamp. |
-| Lot / serial traceability | [`stock_lot.py`](https://github.com/odoo/odoo/blob/19.0/addons/stock/models/stock_lot.py), [`stock_traceability.py`](https://github.com/odoo/odoo/blob/19.0/addons/stock/report/stock_traceability.py), [`mrp`](https://github.com/odoo/odoo/tree/19.0/addons/mrp) | Handled by Odoo | Third-party-verifiable proof that records existed in a given state at a given time. |
-| Transfers between subsidiaries | No `inter_company` addon in the community repo (18.0, 19.0, 20.0). The [multi-company doc](https://www.odoo.com/documentation/19.0/applications/general/companies/multi_company.html) describes inter-company transactions without naming an edition. | Gap | On-chain transfers with public settlement. The accounting link is not implemented. |
-| Document signing / DMS | No `sign` or `documents` addon in the community repo (18.0, 19.0, 20.0). The [editions page](https://www.odoo.com/page/editions) lists both as Enterprise. | Gap | Hash anchoring of signed documents. Not implemented. |
-
-### Payment provider interface
-A community provider subclasses `payment.provider` and `payment.transaction` from the `payment` module. [`payment_custom`](https://github.com/odoo/odoo/blob/19.0/addons/payment_custom/__manifest__.py) is the provider for custom flows such as wire transfers; its transaction model implements `_get_specific_rendering_values`, `_get_communication`, `_extract_amount_data`, and `_apply_updates`. [`payment_demo`](https://github.com/odoo/odoo/blob/19.0/addons/payment_demo/models/payment_transaction.py) additionally implements `_send_payment_request`, `_send_capture_request`, `_send_void_request`, and `_send_refund_request`. A watch-only KAS flow (an address, then a later on-chain confirmation) is closer to `payment_custom` than to the capture, void and refund flow.
-
-## Possible applications
-
-None of the following is implemented as a Kaspa feature in Odoo. Odoo itself documents payments and inter-company transactions; see the [comparison](#comparison-with-odoo-modules) for how each relates to existing modules.
-
-- Supply-chain provenance: batch-level links from raw materials to delivery, anchored on Kaspa.
-- Timestamped audit trails: tamper-evident hashes of records.
-- Cross-border invoice settlement: payments on a public network, verifiable by both parties.
-- Transfers between subsidiaries.
-- Small-value payments.
-
-Building blocks on the Kaspa side, not yet used by any Odoo module:
-- Tokens (assets, loyalty points): KCC-20 is `Status: Final` ([kcc-0020.md](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md)); KCC-23 is Draft. KCC-0 limits what Final means (see [Findings](#findings)).
-- Escrow and conditional payments: covenants ([KIP-17](https://github.com/kaspanet/kips/blob/master/kip-0017.md), Active) went live with Toccata on 30 Jun 2026 ([kaspa.org/lore](https://kaspa.org/lore)). [docs.kaspa.org](https://docs.kaspa.org) links a [Toccata guide](https://docs.kaspa.org/toccata).
-
-## Side note: Kaspa Dollar
-
-Kaspa is in live use, but KAS is a volatile asset. A dollar-denominated stablecoin on Kaspa is therefore being explored, and stablecoin issuers could in principle operate on Kaspa. Nothing of this exists or is confirmed today: no KIP or KCC specifies a dollar token, no Tether issuance on Kaspa is confirmed, and the [master file](https://github.com/STP-KAS/kaspa-master-file) records no spendable L1 stablecoin. If it materializes, it could be an important step for Kaspa.
-
-
-
-## Audits
-
-This repo has two audits: Audit by Grokbot and Audit by Grok Build. Everything beneath the two audits is the best of both, a combined synthesis of their findings. On this repo, it is the result of a challenge between the two.
-
-### Audit by Grokbot
-This write-up was compiled on 27 Oct 2026 from primary sources: the KIPs/KCCs repos, kaspa.org, Odoo's docs, and the STP-KAS master file. Every URL was checked with curl (all returned 200, except explorer.kaspa.org, which returns 403 to scripted requests). Use cases that are not implemented are labelled as possibilities. The Odoo comparison is based on the community source code at github.com/odoo/odoo, branch 19.0, with the 18.0 addon list cross-checked through the GitHub API. File paths are linked.
-
-### Audit by Grok Build
-
-**Opinion:** The comparison matches the Odoo 19.0 tree on the files it names. Payments in KAS are a gap. Invoicing, journal hashes, lot traceability, and e-invoicing are handled in the community tree. An 8-decimal unit does not fit `res.currency`'s rounding field, and `SOMPI_PER_KASPA` is 100,000,000. DAGKnight is still KIP-2, status Proposed. Kaspa Dollar is an announcement and a roadmap on their site. It is not a KCC, and it is not a shipped token.
-
-**Summary and glossary check:** The summary matches the comparison and does not add a claim the body leaves unsourced. It does not restate the Kaspa Dollar note. Its Kaspa Explained link is the 6 Oct 2026 status page, which still calls KCC-20 Draft, so the summary now says that beside the link. This README has no Glossary section and no Outlook section. The 8-decimal unit is stated in the comparison, and it matches [`SOMPI_PER_KASPA`](https://github.com/kaspanet/rusty-kaspa/blob/master/consensus/core/src/constants.rs). Toccata's activation date is stated under "Not yet available," from [kaspa.org/lore](https://kaspa.org/lore) and [rusty-kaspa #1082](https://github.com/kaspanet/rusty-kaspa/pull/1082). KCC-20's Final status, and the KCC-0 limit on what Final means, are stated in that same section.
-
-**Comparison:**
-
-| Use case | Status | What this pass found |
+### Company and editions
+| Item | Fact | Source |
 |---|---|---|
-| Receiving payments | Gap | 23 `payment_*` modules on 19.0, 17 on 18.0, plus the `payment` framework. No Kaspa provider in that tree. |
-| Multi-currency invoicing and reconciliation (fiat) | Handled by Odoo | Fiat rounding and reconciliation are in the community tree. An 8-decimal unit does not fit `rounding`. |
-| EU e-invoicing | Handled by Odoo | `account_edi_ubl_cii` and `account_peppol` are in the 19.0 tree. |
-| Inalterability of journal entries | Handled by Odoo | `secure_sequence_number` and `inalterable_hash` are lines 354–355. The hash stays in the database. |
-| Lot / serial traceability | Handled by Odoo | `stock_lot.py`, the traceability report, and `mrp` are in the 19.0 tree. |
-| Transfers between subsidiaries | Gap | No `inter_company` addon on 18.0, 19.0, or 20.0. The user doc describes the feature and does not name an edition. |
-| Document signing / DMS | Gap | No `sign` or `documents` addon on 18.0, 19.0, or 20.0. The editions page marks both Enterprise-only. |
+| Company | Odoo SA, headquartered in Belgium (Louvain-la-Neuve, Antwerp, Grand-Rosière offices); founder and CEO Fabien Pinckaers | [about](https://www.odoo.com/page/about-us) |
+| Users | Over 28,000,000 users, from 1-user startups to enterprises with 300,000+ users | [about](https://www.odoo.com/page/about-us) |
+| Community edition | Open source, LGPL-3 | [github.com/odoo/odoo](https://github.com/odoo/odoo) |
+| Enterprise edition | Paid; adds apps such as Sign and Documents | [editions page](https://www.odoo.com/page/editions) |
+| Extensions | Third-party modules via the Apps store | [apps.odoo.com](https://apps.odoo.com) |
 
-The binary labels stand. On this re-check the table's counts, the `res.currency` path, the editions note, and the inter-company note still match the sources below. No row label changes.
+### What it does
+Odoo is a modular ERP: each business function is an app sharing one database, so a sale can drive stock, invoicing and accounting without re-entry ([about](https://www.odoo.com/page/about-us)).
 
-**Findings:**
-- Odoo 19.0 has 23 modules named `payment_*`, and 18.0 has 17, plus the `payment` framework. None of the names is a crypto-asset provider. Counted from the addon directories on [github.com/odoo/odoo](https://github.com/odoo/odoo). The default branch is 20.0 (pushed 27 Oct 2026).
-- `account_move.py` lines 354–355 are `secure_sequence_number` and `inalterable_hash`. `restrict_mode_hash_table` is defined on the journal at line 145. [account_move.py](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_move.py), [account_journal.py](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_journal.py).
-- `res.currency.rounding` is stored with `digits=(12, 6)`. `decimal_places` is computed from that factor. [res_currency.py](https://github.com/odoo/odoo/blob/19.0/odoo/addons/base/models/res_currency.py) lines 37–40 and 162–168. The account module inherits the model and adds a rounding warning. One sompi is 10^-8 KAS ([`SOMPI_PER_KASPA`](https://github.com/kaspanet/rusty-kaspa/blob/master/consensus/core/src/constants.rs) is `100_000_000`). [KIP-14](https://github.com/kaspanet/kips/blob/master/kip-0014.md) says the Crescendo change raises blocks per second from 1 to 10.
-- The [editions comparison](https://www.odoo.com/page/editions) marks Sign and Documents absent from Community and present in Enterprise. No addon named `sign`, `documents`, or `inter_company` is in the community repo on 18.0, 19.0, or 20.0. The [multi-company doc](https://www.odoo.com/documentation/19.0/applications/general/companies/multi_company.html) describes inter-company transactions as a Settings feature and does not call the feature Enterprise.
-- The Apps store lists third-party crypto providers. Confirmed pages: [BTCPay Server for 17.0](https://apps.odoo.com/apps/modules/17.0/payment_btcpayserver) (the 18.0 and 19.0 URLs tried returned 404) and [OpenNode for 19.0](https://apps.odoo.com/apps/modules/19.0/payment_opennode). A search for `kaspa` did not list a Kaspa module. [Kaspi.kz](https://apps.odoo.com/apps/modules/19.0/mp_kaspi_kz) is a Kazakhstan marketplace.
-- [kaspa.org](https://kaspa.org) says the network runs at 10 blocks per second and says "No premine." [kaspa.org/lore](https://kaspa.org/lore) says mainnet launched in November 2021 with no premine, no insider allocation, and no pre-sales, names "permissionless settlement," describes Toccata as activated on 30 Jun 2026 at DAA score 474165565, describes DAGKnight as the next hard fork with target block times of 40–25 ms, and lists a separate later "2027 hardfork" for 100 blocks per second. Lore gives no mainnet date for DAGKnight.
-- [KIP-2](https://github.com/kaspanet/kips/blob/master/kip-0002.md) is Proposed. Its title is the DAGKNIGHT upgrade. The [rusty-kaspa `dagknight` branch](https://github.com/kaspanet/rusty-kaspa/tree/dagknight) tip is `ad45e241` (8 Sep 2026). Compared with `master` it is ahead 129, behind 14, and diverged. [Topic 295](https://research.kas.pa/t/a-proposal-towards-elastic-throughput/295) (hashdag, 5 Feb 2025) mentions DAGKNIGHT inside a throughput proposal. It is not an activation notice. [rusty-kaspa #1082](https://github.com/kaspanet/rusty-kaspa/pull/1082), merged 19 Aug 2026, states the Toccata activation above. [KIP-17](https://github.com/kaspanet/kips/blob/master/kip-0017.md) is Active.
-- [kcc-0020.md](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md) says `Status: Final` (commit [`9dec4a04`](https://github.com/kaspanet/kccs/commit/9dec4a0421326a99c70d07f0aa11d11bc894ab9b), 21 Oct 2026). [kcc-0023.md](https://github.com/kaspanet/kccs/blob/main/kcc-0023.md) says Draft. [KCC-0](https://github.com/kaspanet/kccs/blob/main/kcc-0000.md) says a Final KCC is an ecosystem convergence point and does not make the convention protocol ground truth. The kccs tree has no stablecoin document. The [master file](https://github.com/STP-KAS/kaspa-master-file) Not-live cell says there is no spendable L1 stable. A search of that README found no sentence about bridged USDT and a freeze key.
-- [kaspaexplained.com/status](https://kaspaexplained.com/status) says "Sources checked October 6, 2026" and still calls KCC-20 Draft, and KCC-1 and KCC-2 Last Call. The kccs files say KCC-20 is Final.
-- [KIP-16](https://github.com/kaspanet/kips/blob/master/kip-0016.md) is Active. Its authors line is Alexander Safstrom (@saefstroem). [@KaspaDollar](https://x.com/KaspaDollar/status/2113601328975098237) on 23 Oct 2026 described an initiative led by @asaefstroem, an overcollateralized design, a fundraiser target, and a 1 Jan 2027 return condition, and linked [kaspadollar.com](https://kaspadollar.com). The site and its [docs page](https://kaspadollar.com/docs) returned HTTP 200. The docs page is titled "Roadmap 2027" and states their own later dates, including a testnet in May and a mainnet in September. @asaefstroem wrote "Covenants will issue it" ([24 Oct 2026](https://x.com/asaefstroem/status/2113970020598632570)). Michael Sutton offered technical help ([24 Oct 2026](https://x.com/michaelsuttonil/status/2114040191719444646)). A GitHub search for a repository named kaspadollar returned none. A Tether issuance on Kaspa, and several stablecoins, are not confirmed.
-- [docs.kaspa.org](https://docs.kaspa.org) links a [Toccata guide](https://docs.kaspa.org/toccata). `https://docs.kaspa.org/docs/toccata/based-apps` returned 404. [explorer.kaspa.org](https://explorer.kaspa.org) returned 403 to this client. [kaspa.stream](https://kaspa.stream), [wiki.kaspa.org](https://wiki.kaspa.org), [research.kas.pa](https://research.kas.pa), [qa.kas.pa](https://qa.kas.pa/), [discord.gg/kaspa](https://discord.gg/kaspa), [t.me/kasparnd](https://t.me/kasparnd), and [kaspa.news](https://kaspa.news) returned HTTP 200. This pass did not read the Telegram channel or match posts to kaspa.news.
+| Area | Community modules (19.0) |
+|---|---|
+| Accounting and invoicing | [`account`](https://github.com/odoo/odoo/tree/19.0/addons/account), [`account_peppol`](https://github.com/odoo/odoo/tree/19.0/addons/account_peppol) |
+| Sales and CRM | [`sale`](https://github.com/odoo/odoo/tree/19.0/addons/sale), [`crm`](https://github.com/odoo/odoo/tree/19.0/addons/crm) |
+| Inventory and manufacturing | [`stock`](https://github.com/odoo/odoo/tree/19.0/addons/stock), [`mrp`](https://github.com/odoo/odoo/tree/19.0/addons/mrp) |
+| Point of sale | [`point_of_sale`](https://github.com/odoo/odoo/tree/19.0/addons/point_of_sale) |
+| E-commerce | [`website_sale`](https://github.com/odoo/odoo/tree/19.0/addons/website_sale) |
+| HR | [`hr`](https://github.com/odoo/odoo/tree/19.0/addons/hr) |
+| Payments | [`payment`](https://github.com/odoo/odoo/tree/19.0/addons/payment) plus `payment_*` providers |
 
-**Corrections needed:**
-- The Kaspa Dollar note said KAS is a volatile asset, that this is a practical barrier for fiat bookkeeping, and that a dollar coin would be an important step which leaves room for Tether-like issuers. Those sentences are not in a KIP, a KCC, or on kaspa.org. A Tether issuance on Kaspa is not confirmed. Source for the live network: [kaspa.org/lore](https://kaspa.org/lore). Source for the missing token standard: the [kccs](https://github.com/kaspanet/kccs) file list and the master file's Not-live cell.
-- "No code repository or specification had been found." [kaspadollar.com/docs](https://kaspadollar.com/docs) is a roadmap titled "Roadmap 2027." A GitHub search for a repository named kaspadollar returned none. The page is not a specification.
-- "Ask in the Discord wallets channel." The invite URL returned HTTP 200. This pass did not read a channel list.
-- The summary listed Kaspa Explained among reliable sources with no date. The page says "Sources checked October 6, 2026" and still calls KCC-20 Draft. [kcc-0020.md](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md) says Final (21 Oct 2026).
+Typical customers are small and medium businesses (for example retail, restaurants via POS, distribution, manufacturing) that want one system instead of separate tools; the user range above is from Odoo's own page.
 
-**Fixes made:** Replaced the Kaspa Dollar opening with the live-network fact, the absence of a KIP or KCC for a dollar token, and the master file's Not-live cell. Cited the roadmap page, the "Covenants will issue it" reply, and the empty repository search. Removed the instruction to ask in a Discord channel this pass did not read. Put the 6 Oct 2026 date and the KCC-20 Draft line next to the Kaspa Explained link in the summary.
+## Gaps and possible solutions
 
-**Suggestions / additions:** The provider hooks a KAS module would implement stay under the comparison. The summary does not mention the Kaspa Dollar note. Inter-company's edition is still not stated on the page that documents it. The Kaspa Dollar dates are the site's dates. This pass did not copy the live fundraiser progress. DAGKnight remains KIP-2, Proposed, and is named in the quick reference. It has no mainnet date on [kaspa.org/lore](https://kaspa.org/lore).
+Status is binary: **Gap** (no community module covers it) or **Handled by Odoo**. Every Kaspa approach below is a possible design; none is implemented.
 
-**Sources checked:** 27 Oct 2026. Odoo: github.com/odoo/odoo branches 18.0, 19.0, and 20.0, the file paths in the table, [payment docs 18.0](https://www.odoo.com/documentation/18.0/applications/finance/payment_providers.html) and [19.0](https://www.odoo.com/documentation/19.0/applications/finance/payment_providers.html), the [editions page](https://www.odoo.com/page/editions), the [about page](https://www.odoo.com/page/about-us), the [multi-company doc](https://www.odoo.com/documentation/19.0/applications/general/companies/multi_company.html), and [apps.odoo.com](https://apps.odoo.com). Kaspa: [kaspa.org](https://kaspa.org), [lore](https://kaspa.org/lore), [docs.kaspa.org](https://docs.kaspa.org), [wiki.kaspa.org](https://wiki.kaspa.org), [research.kas.pa](https://research.kas.pa), topic 279, topic 295, rusty-kaspa `master` and `dagknight`, `constants.rs`, pull 1082, KIP-2, KIP-14, KIP-16, KIP-17, KCC-0, KCC-20, KCC-23, and the [master file](https://github.com/STP-KAS/kaspa-master-file). Also [kaspaexplained.com/status](https://kaspaexplained.com/status), [qa.kas.pa](https://qa.kas.pa/), [discord.gg/kaspa](https://discord.gg/kaspa), [t.me/kasparnd](https://t.me/kasparnd), [kaspa.news](https://kaspa.news), [kaspa.stream](https://kaspa.stream), and explorer.kaspa.org (HTTP 403). Kaspa Dollar: the 23 Oct post, the site and [/docs](https://kaspadollar.com/docs), [@asaefstroem](https://x.com/asaefstroem/status/2113970020598632570), [github.com/saefstroem](https://github.com/saefstroem), and [Sutton's reply](https://x.com/michaelsuttonil/status/2114040191719444646). EUR-Lex for 32023R1114 returned HTTP 202 and an empty body.
+### 1. Accepting KAS payments — Gap
+- **Odoo today:** the [`payment`](https://github.com/odoo/odoo/tree/19.0/addons/payment) framework with 23 `payment_*` providers on 19.0 (17 on 18.0), none crypto ([addons](https://github.com/odoo/odoo/tree/19.0/addons/)). Third-party crypto providers exist on the Apps store, e.g. [BTCPay Server](https://apps.odoo.com/apps/modules/17.0/payment_btcpayserver), [OpenNode](https://apps.odoo.com/apps/modules/19.0/payment_opennode); none for Kaspa.
+- **Gap:** no KAS provider.
+- **Possible solution:** a `payment_kaspa` module modelled on [`payment_custom`](https://github.com/odoo/odoo/blob/19.0/addons/payment_custom/__manifest__.py) (show a per-order address and amount, then confirm the transaction when a node or indexer reports it accepted). Fast block production ([KIP-14](https://github.com/kaspanet/kips/blob/master/kip-0014.md)) shortens the wait between payment and confirmation in POS and checkout.
 
-**Date:** 27 Oct 2026. **Commit:** `8ac1a30f4f78a679b1813fee4d1db48a60f9152c`. The prompt is [BUILD-AUDIT-PROMPT.md](BUILD-AUDIT-PROMPT.md). Re-checked the same day after the README dropped its glossary and outlook.
+### 2. KAS amounts and currency rounding — Handled by Odoo (fiat) / Gap (KAS)
+- **Odoo today:** `rounding` stored with `digits=(12, 6)` in [`res_currency.py`](https://github.com/odoo/odoo/blob/19.0/odoo/addons/base/models/res_currency.py).
+- **Gap:** 1 KAS = 10^8 sompi ([`SOMPI_PER_KASPA`](https://github.com/kaspanet/rusty-kaspa/blob/master/consensus/core/src/constants.rs)); 6 decimals cannot hold sompi precision.
+- **Possible solution:** book in KAS rounded to 6 decimals and store the exact sompi amount on the payment transaction; or treat sompi as the integer unit. Reconciliation would match the on-chain amount to the invoice via [`account_reconcile_model.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_reconcile_model.py).
 
-## Findings
+### 3. Journal inalterability — Handled by Odoo
+- **Odoo today:** `inalterable_hash` and `secure_sequence_number` on [`account_move.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_move.py); `restrict_mode_hash_table` on [`account_journal.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_journal.py); French certification in [`l10n_fr_account`](https://github.com/odoo/odoo/tree/19.0/addons/l10n_fr_account).
+- **Gap:** the hash chain lives only in the Odoo database.
+- **Possible solution:** periodically publish the latest chain hash in a Kaspa transaction payload. An auditor can then check that the chain existed at that time without trusting the database operator.
 
-Combined from both audits and re-checked on 27 Oct 2026. Only findings confirmed against the linked source are kept.
+### 4. Lot / serial traceability — Handled by Odoo
+- **Odoo today:** [`stock_lot.py`](https://github.com/odoo/odoo/blob/19.0/addons/stock/models/stock_lot.py), [`stock_traceability.py`](https://github.com/odoo/odoo/blob/19.0/addons/stock/report/stock_traceability.py), [`mrp`](https://github.com/odoo/odoo/tree/19.0/addons/mrp).
+- **Gap:** traceability is visible only inside one company's database.
+- **Possible solution:** anchor a hash (or Merkle root) of lot movements per batch; share the lot record off-chain so partners can verify it against the anchor. [KCC-20](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md) tokens could represent batches, if a business wants transferable records.
 
-- **Payment providers.** Odoo 19.0 and 20.0 each have 23 `payment_*` addons and 18.0 has 17, plus the `payment` framework; none is a crypto-asset provider. Source: addon directories on [github.com/odoo/odoo](https://github.com/odoo/odoo/tree/19.0/addons).
-- **Third-party crypto providers exist outside the community tree.** The Apps store lists [BTCPay Server (17.0)](https://apps.odoo.com/apps/modules/17.0/payment_btcpayserver) and [OpenNode (19.0)](https://apps.odoo.com/apps/modules/19.0/payment_opennode); a search for `kaspa` listed no Kaspa module. Source: [apps.odoo.com](https://apps.odoo.com).
-- **Currency precision.** `res.currency.rounding` is stored with `digits=(12, 6)` and `decimal_places` is derived from it. Source: [res_currency.py](https://github.com/odoo/odoo/blob/19.0/odoo/addons/base/models/res_currency.py) lines 37–40 and 162–168.
-- **KAS unit.** `SOMPI_PER_KASPA` is `100_000_000`, i.e. 8 decimals. Source: [constants.rs](https://github.com/kaspanet/rusty-kaspa/blob/master/consensus/core/src/constants.rs).
-- **Journal inalterability.** `secure_sequence_number` and `inalterable_hash` are defined on `account.move` (lines 354–355) and `restrict_mode_hash_table` on the journal (line 145). Source: [account_move.py](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_move.py), [account_journal.py](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_journal.py).
-- **Editions.** No `sign`, `documents` or `inter_company` addon exists in the community repo on 18.0, 19.0 or 20.0; the editions page lists Sign and Documents as Enterprise. Source: [github.com/odoo/odoo](https://github.com/odoo/odoo), [editions page](https://www.odoo.com/page/editions).
-- **Throughput.** KIP-14 (Active) raises blocks per second from 1 to 10 with Crescendo. Source: [KIP-14](https://github.com/kaspanet/kips/blob/master/kip-0014.md), [kaspa.org/lore](https://kaspa.org/lore).
-- **Covenants.** KIP-17 is Active; Toccata activated on mainnet on 30 Jun 2026 at DAA score 474,165,565. Source: [KIP-17](https://github.com/kaspanet/kips/blob/master/kip-0017.md), [kaspa.org/lore](https://kaspa.org/lore), [rusty-kaspa #1082](https://github.com/kaspanet/rusty-kaspa/pull/1082) (merged 19 Aug 2026).
-- **Token standards.** KCC-20 is `Status: Final`, KCC-23 is Draft, and KCC-0 states that Final marks an ecosystem convergence point, not protocol ground truth. Source: [kcc-0020.md](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md), [kcc-0023.md](https://github.com/kaspanet/kccs/blob/main/kcc-0023.md), [kcc-0000.md](https://github.com/kaspanet/kccs/blob/main/kcc-0000.md).
-- **Launch.** kaspa.org states "No premine"; lore states mainnet launched in November 2021 with no premine and uses the phrase "permissionless settlement". Source: [kaspa.org](https://kaspa.org), [kaspa.org/lore](https://kaspa.org/lore).
+### 5. EU e-invoicing / Peppol — Handled by Odoo
+- **Odoo today:** [`account_edi_ubl_cii`](https://github.com/odoo/odoo/tree/19.0/addons/account_edi_ubl_cii), [`account_peppol`](https://github.com/odoo/odoo/tree/19.0/addons/account_peppol).
+- **Gap:** no independent timestamp outside the Peppol network.
+- **Possible solution:** anchor the UBL document hash as optional evidence. Peppol remains the regulated channel.
 
-Dropped from the audits: the EUR-Lex/MiCA line (the legal text could not be retrieved, and the term is not used in the body) and the reachability notes for Telegram and kaspa.news content (URLs respond, but the descriptive claims were not verified).
+### 6. Transfers between subsidiaries — Gap
+- **Odoo today:** no `inter_company` addon in community (18.0–20.0); the [multi-company doc](https://www.odoo.com/documentation/19.0/applications/general/companies/multi_company.html) describes inter-company transactions.
+- **Gap:** no on-chain settlement option.
+- **Possible solution:** settle intercompany balances in KAS and post matching entries in both companies; covenants ([KIP-17](https://github.com/kaspanet/kips/blob/master/kip-0017.md), active since Toccata, [kaspa.org/lore](https://kaspa.org/lore)) could enforce conditional or time-locked releases.
 
-## Corrections
+### 7. Document signing / notarization — Gap
+- **Odoo today:** Sign and Documents are Enterprise-only ([editions page](https://www.odoo.com/page/editions)); no community addon.
+- **Gap:** no community signing or notarization.
+- **Possible solution:** hash a signed PDF and anchor the hash; anyone with the document can verify the timestamp. This proves existence, not signer identity.
 
-Each item gives the earlier claim, why it was wrong, and the source. All are fixed in the current text.
+### 8. Point of sale and e-commerce — Gap (KAS)
+- **Odoo today:** [`point_of_sale`](https://github.com/odoo/odoo/tree/19.0/addons/point_of_sale) and [`website_sale`](https://github.com/odoo/odoo/tree/19.0/addons/website_sale) use the payment provider framework.
+- **Gap:** inherits gap 1.
+- **Possible solution:** a QR code with address and amount on the POS screen or checkout page, confirmed by the same `payment_kaspa` module; immediate conversion to fiat would be a business choice.
 
-- **"About 25 `payment_*` providers."** Wrong count: 19.0 has 23 and 18.0 has 17. Source: [odoo/odoo addons 19.0](https://github.com/odoo/odoo/tree/19.0/addons), [18.0](https://github.com/odoo/odoo/tree/18.0/addons).
-- **Currency rounding cited from `addons/account/models/res_currency.py`.** That file only inherits `res.currency` and adds a warning; the `rounding` field is defined in the base module. Source: [base res_currency.py](https://github.com/odoo/odoo/blob/19.0/odoo/addons/base/models/res_currency.py).
-- **"None of these is an existing Odoo feature."** Too broad: Odoo documents payments and inter-company transactions; only the Kaspa-based variants are absent. Source: [payment providers doc](https://www.odoo.com/documentation/19.0/applications/finance/payment_providers.html), [multi-company doc](https://www.odoo.com/documentation/19.0/applications/general/companies/multi_company.html).
-- **"Without an intermediary" and a property row citing docs.kaspa.org for signature/script checks.** The cited pages do not contain those statements; lore only uses "permissionless settlement". Source: [kaspa.org/lore](https://kaspa.org/lore), [docs.kaspa.org](https://docs.kaspa.org).
-- **KCC-20 linked to the kccs repo root, with "tooling support is incomplete".** The status is in kcc-0020.md, and the tooling clause had no source. Source: [kcc-0020.md](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md).
-- **"Bridged USDT keeps the issuer's freeze key."** The sentence does not appear in the cited master-file README. Source: [kaspa-master-file](https://github.com/STP-KAS/kaspa-master-file).
-- **kaspaexplained.com/status presented as current status.** The page is dated 6 Oct 2026 and still lists KCC-20 as Draft, while kcc-0020.md says Final. Source: [kaspaexplained.com/status](https://kaspaexplained.com/status), [kcc-0020.md](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md).
-- **Sign and Documents listed as gaps without an edition note.** The editions page marks both Enterprise-only; this is now stated. Source: [editions page](https://www.odoo.com/page/editions).
+### 9. Escrow and conditional payments — Gap
+- **Odoo today:** no escrow module in community.
+- **Possible solution:** covenant scripts ([KIP-17](https://github.com/kaspanet/kips/blob/master/kip-0017.md)) holding funds until delivery is confirmed.
+
+## How Kaspa could help Odoo and its customers
+
+- **For Odoo as a vendor:** a maintained KAS payment provider and an optional anchoring service for the existing hash chain, traceability and documents, alongside current providers.
+- **For Odoo customers:** Odoo is extensible, so a customer or partner can build or install a custom or third-party module on their own initiative ([apps.odoo.com](https://apps.odoo.com)).
+- **Note:** given the accounting, tax and compliance implications, it is best for Odoo itself to look into this and, if it fits, provide it to its customers.
+
+## Audit (Grok)
+
+Checked on 27 Oct 2026 against primary sources: the [odoo/odoo](https://github.com/odoo/odoo) source (branches 18.0, 19.0, 20.0 via the GitHub API), [odoo.com](https://www.odoo.com) pages and docs, [apps.odoo.com](https://apps.odoo.com), the [kaspanet](https://github.com/kaspanet) KIPs, KCCs and rusty-kaspa repos, and [kaspa.org](https://kaspa.org)/[kaspa.org/lore](https://kaspa.org/lore). Every linked URL was fetched; claims that could not be matched to a source were left out.
 
 ## Quick reference: reliable sources
 
-Links checked on 27 Oct 2026. Each one is followed by what you will find there.
-
-**Official Kaspa**
-- [kaspa.org](https://kaspa.org): project site.
-- [kaspa.org/lore](https://kaspa.org/lore): history and upgrade status (Crescendo, Toccata, DAGKnight).
-- [github.com/kaspanet](https://github.com/kaspanet): official GitHub organisation.
-- [kaspanet/rusty-kaspa](https://github.com/kaspanet/rusty-kaspa): the Rust node ("Rusty Kaspa").
-- [kaspanet/kips](https://github.com/kaspanet/kips): Kaspa Improvement Proposals (protocol changes, e.g. KIP-14 Crescendo).
-
-**Docs and research**
-- [docs.kaspa.org](https://docs.kaspa.org): official documentation; start here.
-- [wiki.kaspa.org](https://wiki.kaspa.org): community wiki.
-- [research.kas.pa](https://research.kas.pa): protocol research forum ([Crescendo thread](https://research.kas.pa/t/crescendo-hardfork-discussion-thread/279)).
-- [kaspaexplained.com/status](https://kaspaexplained.com/status): community status page ([source](https://github.com/parker2017code/kaspa-explained)). The page says "Sources checked October 6, 2026" and still calls KCC-20 Draft. [kcc-0020.md](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md) says Final as of 21 Oct 2026. Read it alongside the KCC files.
-- [Kaspa master file](https://github.com/STP-KAS/kaspa-master-file): sourced community fact base (STP-KAS), including the "Who" list of contributors. "Core" is not a formal title. Example: Michael Sutton ([GitHub](https://github.com/michaelsutton), [X](https://x.com/michaelsuttonil)).
-
-**Community help**
-- [Kaspa Discord](https://discord.gg/kaspa): the invite URL returned HTTP 200 on 27 Oct 2026. This pass did not read the channel list.
-- [qa.kas.pa](https://qa.kas.pa/): written Q&A. The page title is Kaspa Q&A.
-- [t.me/kasparnd](https://t.me/kasparnd) and [kaspa.news](https://kaspa.news): both URLs returned HTTP 200. This pass did not read the channel or match posts to the news site.
-
-**Explorers**
-- [explorer.kaspa.org](https://explorer.kaspa.org): returned HTTP 403 to this client on 27 Oct 2026. [kaspa.stream](https://kaspa.stream): returned HTTP 200.
-
-**Wallets and tools**
-- None are listed here. [docs.kaspa.org](https://docs.kaspa.org) is the docs entry point. This pass did not read a Discord channel list.
-
-**Tokens and stablecoins**
-- [kaspanet/kccs](https://github.com/kaspanet/kccs): token and contract conventions. [KCC-20](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md) is Final. [KCC-23](https://github.com/kaspanet/kccs/blob/main/kcc-0023.md) is Draft. [KCC-0](https://github.com/kaspanet/kccs/blob/main/kcc-0000.md) says Final is not protocol ground truth.
-- [Kaspa Dollar](https://x.com/KaspaDollar) · [kaspadollar.com](https://kaspadollar.com): stablecoin initiative, in fundraising, not live.
-
-**Odoo**
-- [odoo.com](https://www.odoo.com) · [apps.odoo.com](https://apps.odoo.com) · [payment providers docs](https://www.odoo.com/documentation/18.0/applications/finance/payment_providers.html).
-- [github.com/odoo/odoo](https://github.com/odoo/odoo): official source. Paths used in this report: [payment](https://github.com/odoo/odoo/tree/19.0/addons/payment) · [account](https://github.com/odoo/odoo/tree/19.0/addons/account) · [stock](https://github.com/odoo/odoo/tree/19.0/addons/stock) · [mrp](https://github.com/odoo/odoo/tree/19.0/addons/mrp) · [account_peppol](https://github.com/odoo/odoo/tree/19.0/addons/account_peppol) · [l10n_fr_account](https://github.com/odoo/odoo/tree/19.0/addons/l10n_fr_account).
-
-**This report**
-- [STP-KAS/kaspa-odoo](https://github.com/STP-KAS/kaspa-odoo).
+| Topic | Links |
+|---|---|
+| Kaspa official | [kaspa.org](https://kaspa.org) · [kaspa.org/lore](https://kaspa.org/lore) · [github.com/kaspanet](https://github.com/kaspanet) · [rusty-kaspa](https://github.com/kaspanet/rusty-kaspa) · [KIPs](https://github.com/kaspanet/kips) · [KCCs](https://github.com/kaspanet/kccs) |
+| Docs and research | [docs.kaspa.org](https://docs.kaspa.org) · [wiki.kaspa.org](https://wiki.kaspa.org) · [research.kas.pa](https://research.kas.pa) · [Kaspa Explained](https://kaspaexplained.com/status) · [Kaspa master file](https://github.com/STP-KAS/kaspa-master-file) |
+| Community | [Kaspa Discord](https://discord.gg/kaspa) · [qa.kas.pa](https://qa.kas.pa/) · [t.me/kasparnd](https://t.me/kasparnd) · [kaspa.news](https://kaspa.news) |
+| Explorer | [kaspa.stream](https://kaspa.stream) |
+| Odoo | [odoo.com](https://www.odoo.com) · [editions page](https://www.odoo.com/page/editions) · [apps.odoo.com](https://apps.odoo.com) · [payment providers docs](https://www.odoo.com/documentation/19.0/applications/finance/payment_providers.html) · [github.com/odoo/odoo](https://github.com/odoo/odoo) |
 
 This document contains no price information or financial advice.
