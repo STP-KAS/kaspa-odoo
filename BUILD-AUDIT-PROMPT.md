@@ -1,30 +1,30 @@
-# GROK BUILD PROMPT — Audit STP-KAS/kaspa-odoo
+# GROK BUILD PROMPT — Audit and extend STP-KAS/kaspa-odoo
 
-**Scope:** only the repo https://github.com/STP-KAS/kaspa-odoo (branch `main`). Do not touch any other repo.
+**Scope:** only https://github.com/STP-KAS/kaspa-odoo, branch `main`. Pull first and continue from the current README. Do not rewrite it from scratch, and keep its factual, neutral tone.
 
 **Rules**
-- Facts only. Every claim must have a source link, primary sources preferred: kaspanet repos (KIPs, KCCs, rusty-kaspa), kaspa.org, docs.kaspa.org, research.kas.pa, odoo.com docs, the official Odoo source repo https://github.com/odoo/odoo, the RRM Consultoría site and X thread, and https://github.com/STP-KAS/kaspa-master-file.
-- No secrets, keys or tokens in any file or commit.
-- No tags. No releases. No force push. Normal commits to `main` only.
-- Do not post anywhere else, and do not contact RRM or Odoo.
-- Professional, factual tone: no promotional or emotional language, no price information.
+- Facts only. Every statement must have a source, preferably a primary one: github.com/odoo/odoo (file paths, branches 18.0/19.0), odoo.com docs, kaspanet repos (KIPs, KCCs, rusty-kaspa), kaspa.org, docs.kaspa.org, research.kas.pa, and https://github.com/STP-KAS/kaspa-master-file.
+- Professional and neutral. No marketing, no emotion, no price talk.
+- No secrets. No tags or releases. No force push. Only this repo. Do not post anywhere.
+- Never fake verification. If you are blocked (auth, access, an unreachable source), stop and report.
 
 **Task**
-1. Read every file in the repo.
-2. Verify every claim and every link against its primary source:
-   - Open each URL and drop or fix dead ones.
-   - Check the 10 BPS and Crescendo facts against KIP-14, and the KCC-20 Final and KCC-23 Draft status against kaspanet/kccs.
-   - Check RRM's figures against their posts and the kaspa.stream address.
-   - Check whether any public RRM repo or Odoo Apps listing exists by now.
-3. Flag errors, overclaims, unsourced lines and outdated statements. Fix them in place, with sources.
-4. Do your own research. Add what is missing and useful to Odoo users, sourced. Examples: how an Odoo payment provider module would accept KAS, wallet and custody options, the MiCA context, and existing Kaspa payment or merchant tools.
-5. Replace the "Not yet run" line under `## Grok bots audit` → `### Grok Build audit` in README.md with:
-   - **Opinion:** 3–5 lines.
-   - **Findings:** a list, each with a source.
-   - **Fixes made:** what you changed.
-   - **Suggestions / additions:** what you added, and what remains open.
-   - The date, and your commit SHA(s).
-6. Commit with clear messages and push to `STP-KAS/kaspa-odoo` `main`.
-7. If you are blocked (auth, access, a source you can't reach), stop and report. Never fake verification.
+1. **Odoo module comparison.** Verify every row and file link in "Comparison with Odoo modules" against the odoo/odoo source. Extend it where useful, for example:
+   - Odoo's `payment` provider interface: what a KAS provider would need to implement.
+   - Currency rounding and decimals in `res.currency` for an 8-decimal asset.
+   - Whether `inter_company`, `sign` and `documents` are Enterprise-only, with an odoo.com source.
+   - Any public third-party crypto payment modules on apps.odoo.com.
 
-Quality over speed. Within this repo you have full authority.
+   Correct the coverage labels if needed.
+2. **Stablecoin outlook.** Verify and extend the stablecoin item: a Kaspa dollar, multiple stablecoins, a Tether-like issuer. Keep it future, not current. Report only what has a primary source, say who stated it and when, and mark everything else "not confirmed".
+3. **Hard fork note.** Verify the name and status of the next hard fork, currently given as DAGKnight per kaspa.org/lore. Check the rusty-kaspa `dagknight` branch, KIPs and research.kas.pa. No dates without a source.
+4. Re-check every URL in the repo and fix or drop dead links.
+5. Replace the text under `## Grok bots audit` → `### Grok Build audit` with your own take:
+   - **Opinion:** 3–5 lines.
+   - **Findings:** each with a source.
+   - **Fixes made.**
+   - **Suggestions / additions.**
+   - The date and your commit SHA(s).
+
+   Keep the "TN10 ops2 view" part unchanged.
+6. Commit with clear messages and push to `main`.
