@@ -15,7 +15,7 @@
 2. Odoo:
    - The source code at https://github.com/odoo/odoo, branches 18.0 and 19.0, with this as an analysis of the actual code rather than a skim: `addons/payment` and `payment_*`, `account` (multi-currency, reconciliation, the `inalterable_hash` / secure entries), `account_edi_ubl_cii`, `account_peppol`, `stock` lots and the traceability report, and `mrp`. Also check whether `inter_company`, `sign` and `documents` exist.
    - The docs at https://www.odoo.com/documentation and the app store at https://apps.odoo.com, including any crypto payment modules.
-3. Kaspa: https://kaspa.org and https://kaspa.org/lore, https://docs.kaspa.org, https://wiki.kaspa.org, https://research.kas.pa, and the kaspanet repos rusty-kaspa (including the `dagknight` branch), kips (KIP-14) and kccs (KCC-20 and KCC-23 status).
+3. Kaspa: https://kaspa.org and https://kaspa.org/lore, https://docs.kaspa.org, https://wiki.kaspa.org, https://research.kas.pa, and the kaspanet repos rusty-kaspa (including the `dagknight` branch), kips (KIP-14) and kccs (KCC-20 and KCC-23 status). Also check `consensus/core/src/constants.rs` in rusty-kaspa (`SOMPI_PER_KASPA`) for the glossary.
 4. The Kaspa master file: https://github.com/STP-KAS/kaspa-master-file
 5. Kaspa Dollar:
    - The X account https://x.com/KaspaDollar and its site https://kaspadollar.com.
@@ -30,6 +30,7 @@
 3. Check every URL and list any that are dead.
 4. Write your section using these parts:
    - **Opinion:** 3–5 lines.
+   - **Summary and glossary check:** whether the Summary is accurate, modest and consistent with the body, and whether each glossary entry is correct and readable for Odoo engineers new to Kaspa. Suggest changes, with sources.
    - **Comparison:** your table.
    - **Findings:** each with a source.
    - **Corrections needed:** for each, the claim, why it's wrong, and the source.
