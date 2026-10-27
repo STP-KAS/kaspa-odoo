@@ -19,7 +19,7 @@ Kaspa core: [github.com/kaspanet](https://github.com/kaspanet). Reliable sources
 |---|---|---|
 | Company | Odoo SA, headquartered in Belgium (Louvain-la-Neuve, Antwerp, Grand-Rosière offices); founder and CEO Fabien Pinckaers | [about](https://www.odoo.com/page/about-us) |
 | Users | Over 28,000,000 users, from 1-user startups to enterprises with 300,000+ users | [about](https://www.odoo.com/page/about-us) |
-| Community edition | Open source, LGPL-3 | [github.com/odoo/odoo](https://github.com/odoo/odoo) |
+| Community edition | Open source, LGPL-3 | [github.com/odoo/odoo](https://github.com/odoo/odoo), [LICENSE](https://github.com/odoo/odoo/blob/19.0/LICENSE) |
 | Enterprise edition | Paid; adds apps such as Sign and Documents | [editions page](https://www.odoo.com/page/editions) |
 | Extensions | Third-party modules via the Apps store | [apps.odoo.com](https://apps.odoo.com) |
 
@@ -36,7 +36,7 @@ Odoo is a modular ERP: each business function is an app sharing one database, so
 | HR | [`hr`](https://github.com/odoo/odoo/tree/19.0/addons/hr) |
 | Payments | [`payment`](https://github.com/odoo/odoo/tree/19.0/addons/payment) plus `payment_*` providers |
 
-Typical customers are small and medium businesses (for example retail, restaurants via POS, distribution, manufacturing) that want one system instead of separate tools; the user range above is from Odoo's own page.
+Odoo's about page gives its user range (see above); it does not break customers down by sector.
 
 ## Gaps and possible solutions
 
