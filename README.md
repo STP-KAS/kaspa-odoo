@@ -1,12 +1,14 @@
 # Kaspa and Odoo
 
-Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA or the Kaspa developers. Each statement links to its source. Review notes: [Grok bots audit](#grok-bots-audit). Terms: [Glossary](#glossary).
+Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA or the Kaspa developers. Each statement links to its source. Review notes: [Grok bots audit](#grok-bots-audit).
 
 > **Disclaimer.** The author is not a Kaspa contributor and does not take part in Kaspa development in any way. They are an interested individual who tests on Kaspa's testnet. Kaspa is open source ([official Kaspa GitHub organization](https://github.com/kaspanet)) and decentralized: anyone can build on it.
 
 ## Summary
 
 Kaspa is a proof-of-work blockDAG that produces 10 blocks per second on mainnet. kaspa.org/lore names permissionless settlement among the properties it pairs with proof of work. Odoo's community code (branches 18.0 and 19.0) contains no Kaspa integration and no crypto-asset payment provider. Against that code, three rows are gaps: a KAS payment provider, transfers between subsidiaries, and document signing. Sign and Documents are Enterprise-only on Odoo's editions page. The inter-company user doc describes the feature and does not name an edition. Where Odoo already handles multi-currency invoicing, journal hashes, lot traceability, or e-invoicing, Kaspa would add an external timestamp. An 8-decimal KAS unit does not fit Odoo's currency rounding field. Not shipped: DAGKnight (KIP-2, Proposed) and a Kaspa dollar (an announced fundraiser, not a token). KCC-20 is a Final convention for a fungible-token covenant. A Final KCC is not protocol ground truth. A Tether issuance on Kaspa, and several stablecoins, are not confirmed.
+
+Kaspa core: [github.com/kaspanet](https://github.com/kaspanet). Reliable sources: [kaspa.org](https://kaspa.org), [docs.kaspa.org](https://docs.kaspa.org), [research.kas.pa](https://research.kas.pa), [qa.kas.pa](https://qa.kas.pa/), [Kaspa Discord](https://discord.gg/kaspa), [t.me/kasparnd](https://t.me/kasparnd), [kaspa.news](https://kaspa.news).
 
 ## Grok bots audit
 
@@ -115,18 +117,6 @@ A community provider subclasses `payment.provider` and `payment.transaction` in 
 - **Next hard fork: DAGKnight.** [KIP-2](https://github.com/kaspanet/kips/blob/master/kip-0002.md) is Proposed. Its title is the upgrade to the DAGKNIGHT protocol. kaspa.org/lore describes the "DAGKnight hardfork" as the consensus upgrade that follows Toccata, with block times targeted at 40–25 ms, and lists a separate later "2027 hardfork" for 100 blocks per second ([kaspa.org/lore](https://kaspa.org/lore)). Lore gives no mainnet date for DAGKnight. The rusty-kaspa `dagknight` branch tip is `ad45e241` (8 Sep 2026); compared with `master` it is ahead 129, behind 14, and diverged ([branch](https://github.com/kaspanet/rusty-kaspa/tree/dagknight)). [Topic 295](https://research.kas.pa/t/a-proposal-towards-elastic-throughput/295) (hashdag, 5 Feb 2025) mentions the protocol inside a throughput proposal. It is not an activation notice. The master file records DAGKnight as not shipped ([master file](https://github.com/STP-KAS/kaspa-master-file)). Toccata is already live: [KIP-17](https://github.com/kaspanet/kips/blob/master/kip-0017.md) is Active, and lore and [rusty-kaspa #1082](https://github.com/kaspanet/rusty-kaspa/pull/1082) give the activation as 30 Jun 2026 at DAA score 474165565.
 - **Stablecoins on Kaspa.** KCC-20 (fungible token covenant) is `Status: Final` ([kcc-0020.md](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md)). That is a convention for a token covenant. It is not itself a dollar token. On 27 Oct 2026 no KIP or KCC confirms a shipped Kaspa dollar, a Tether (USDT) issuance on Kaspa L1, or several stablecoins. The master file's Not-live cell says there is no spendable L1 stable. A Tether issuance on Kaspa, and several stablecoins, are not confirmed. One initiative has been announced; see the side note below.
   - *Side note (27 Oct 2026):* [Kaspa Dollar](https://x.com/KaspaDollar) ([kaspadollar.com](https://kaspadollar.com)). An announcement, not a live token. The project describes itself as "an initiative led by core developer @asaefstroem" (Alexander Säfström; GitHub [saefstroem](https://github.com/saefstroem), X [@asaefstroem](https://x.com/asaefstroem)) to build a decentralized, overcollateralized stablecoin on Kaspa ([announcement, 23 Oct 2026](https://x.com/KaspaDollar/status/2113601328975098237)). [KIP-16](https://github.com/kaspanet/kips/blob/master/kip-0016.md), Status Active, names Alexander Safstrom (@saefstroem) as its author. Asked who would issue it, he wrote "Covenants will issue it" ([24 Oct 2026](https://x.com/asaefstroem/status/2113970020598632570)). Michael Sutton publicly offered technical support ([24 Oct 2026](https://x.com/michaelsuttonil/status/2114040191719444646)). The announcement states a donation fundraiser with a target of 5,000,000 KAS, refundable if not reached by 1 Jan 2027. The site's [docs page](https://kaspadollar.com/docs) is titled "Roadmap 2027" and states their own later dates, including a testnet in May and a mainnet in September. A GitHub search for a repository named kaspadollar returned none on 27 Oct 2026. The page is a roadmap, not a specification.
-
-## Glossary
-
-- **blockDAG:** a ledger in which several blocks can be created in parallel and are then ordered (Kaspa's GHOSTDAG protocol), instead of a single chain.
-- **BPS:** blocks per second. Kaspa mainnet runs at 10.
-- **KAS:** Kaspa's native coin. 1 KAS = 100,000,000 sompi, the smallest unit (8 decimals; [`SOMPI_PER_KASPA`](https://github.com/kaspanet/rusty-kaspa/blob/master/consensus/core/src/constants.rs)).
-- **UTXO:** unspent transaction output. Kaspa tracks coins as discrete outputs, as Bitcoin does, rather than as account balances.
-- **Covenant:** a rule attached to an output that restricts how it can be spent. [KIP-17](https://github.com/kaspanet/kips/blob/master/kip-0017.md) is Active. [kaspa.org/lore](https://kaspa.org/lore) says Toccata activated on 30 Jun 2026 at DAA score 474165565.
-- **KCC-20:** the Kaspa convention for fungible-token covenants. [kcc-0020.md](https://github.com/kaspanet/kccs/blob/main/kcc-0020.md) says `Status: Final`. [KCC-0](https://github.com/kaspanet/kccs/blob/main/kcc-0000.md) says a Final KCC is an ecosystem convergence point and does not make the convention protocol ground truth.
-- **Anchoring / Merkle proof:** many record hashes are combined into one root hash, which is written in a Kaspa transaction. A Merkle proof shows that one record's hash is part of that root.
-- **MiCA:** the EU regulation on markets in crypto-assets (Regulation (EU) 2023/1114).
-- **Peppol:** the e-invoicing network used for EU e-invoicing, supported in Odoo by `account_peppol`.
 
 ## Quick reference: reliable sources
 
