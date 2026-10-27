@@ -12,6 +12,8 @@ Kaspa core: [github.com/kaspanet](https://github.com/kaspanet). Reliable sources
 
 ## Audits
 
+This repo has two audits: Audit by Grokbot and Audit by Grok Build. Everything beneath the two audits is the best of both, a combined synthesis of their findings.
+
 ### Audit by Grokbot
 This write-up was compiled on 27 Oct 2026 from primary sources: the KIPs/KCCs repos, kaspa.org, Odoo's docs, and the STP-KAS master file. Every URL was checked with curl (all returned 200, except explorer.kaspa.org, which returns 403 to scripted requests). Use cases that are not implemented are labelled as possibilities. The Odoo comparison is based on the community source code at github.com/odoo/odoo, branch 19.0, with the 18.0 addon list cross-checked through the GitHub API. File paths are linked.
 
