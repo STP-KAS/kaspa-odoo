@@ -6,7 +6,7 @@
 
 **Rules**
 - Keep the README's disclaimer (the block quote under the intro line) exactly as it is. Do not change, move or remove it.
-- Do not mention RRM Consultoría anywhere in your output, report or commits: no links, claims or references to its thread, site or batch address.
+- Keep RRM Consultoría out entirely. stp reviewed it, found that it appears AI-generated, is not sure it is legitimate, and does not know its goal. Do not mention it anywhere in your output, report or commits: no links, claims or references to its thread, site or batch address. Focus only on Kaspa and Odoo.
 - Facts only. Every statement needs a source link, preferably a primary one.
 - Professional and neutral. No marketing, no emotion, no price talk.
 - No secrets. No tags or releases. No force push. Only this repo. Do not post anywhere, and do not contact Odoo or the Kaspa Dollar team.
