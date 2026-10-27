@@ -27,7 +27,7 @@
 
 **Task**
 1. Build your own version of the Odoo comparison, using only the binary labels "Gap" or "Handled by Odoo". Where Odoo handles something locally and Kaspa would add an external proof, label it "Handled by Odoo" and state the addition. Note every row where you disagree with the README.
-2. Check every claim in Summary, What, Relevant properties, Outlook (DAGKnight, stablecoins, the Kaspa Dollar side note), Glossary and Sources. Check that the Summary matches the body and adds nothing unsourced, and that the glossary definitions are correct (for example, the 8-decimal sompi unit and the Toccata covenants). Mark each one as confirmed, wrong or unsourced, with your source.
+2. Check every claim in Summary, What, Findings, Outlook (DAGKnight, stablecoins, the Kaspa Dollar side note), Glossary and Sources. Check that the Summary matches the body and adds nothing unsourced, and that the glossary definitions are correct (for example, the 8-decimal sompi unit and the Toccata covenants). Mark each one as confirmed, wrong or unsourced, with your source.
 3. Check every URL and list any that are dead.
 4. Write your section using these parts:
    - **Opinion:** 3–5 lines.
