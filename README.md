@@ -1,17 +1,17 @@
 # Kaspa and Odoo
 
-Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA, RRM Consultoría or the Kaspa developers. Each statement links to its source. Review notes: [Grok bots audit](#grok-bots-audit). Terms: [Glossary](#glossary).
+Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA or the Kaspa developers. Each statement links to its source. Review notes: [Grok bots audit](#grok-bots-audit). Terms: [Glossary](#glossary).
 
 > **Disclaimer.** The author is not a Kaspa contributor and does not take part in Kaspa development in any way. They are an interested individual who tests on Kaspa's testnet. Kaspa is open source ([official Kaspa GitHub organization](https://github.com/kaspanet)) and decentralized: anyone can build on it.
 
 ## Summary
 
-Kaspa is a proof-of-work cryptocurrency network that produces 10 blocks per second. Its transactions can be checked publicly by anyone, without an intermediary. For Odoo, one implementation is public so far: RRM Consultoría, an ERP consultancy that implements Odoo, has announced an add-on that manages a Kaspa wallet and anchors hashes of Odoo records (receipts, delivery notes, manufacturing orders) on Kaspa. It has not been verified beyond its own posts and screenshots. Compared with the Odoo community code, Kaspa could fill three gaps: a KAS payment provider, transfers between subsidiaries, and anchoring of signed documents. In areas Odoo already handles, such as the hash chain on journal entries, lot traceability and e-invoicing, Kaspa would add an external, independently verifiable timestamp rather than replace anything. Several items are not available yet: stablecoins (including the Kaspa Dollar initiative, which is still in fundraising), mature tooling for tokens and escrow, and the next consensus upgrade, DAGKnight. These are worth following for Odoo payment and settlement use cases, but none of them is production-ready today.
+Kaspa is a proof-of-work cryptocurrency network that produces 10 blocks per second. Its transactions can be checked publicly by anyone, without an intermediary. Odoo's community code (branches 18.0 and 19.0) contains no Kaspa integration and no crypto-asset payment provider. Compared with the Odoo community code, Kaspa could fill three gaps: a KAS payment provider, transfers between subsidiaries, and anchoring of signed documents. In areas Odoo already handles, such as the hash chain on journal entries, lot traceability and e-invoicing, Kaspa would add an external, independently verifiable timestamp rather than replace anything. Several items are not available yet: stablecoins (including the Kaspa Dollar initiative, which is still in fundraising), mature tooling for tokens and escrow, and the next consensus upgrade, DAGKnight. These are worth following for Odoo payment and settlement use cases, but none of them is production-ready today.
 
 ## Grok bots audit
 
 ### TN10 ops2 view
-This write-up was compiled on 27 Oct 2026 from primary sources: RRM's X thread and site, the KIPs/KCCs repos, kaspa.org, Odoo's docs, and the STP-KAS master file. Every URL was checked with curl (all returned 200, except explorer.kaspa.org, which returns 403 to scripted requests). Claims that come only from RRM are labelled as theirs. Use cases they have not shipped are labelled as possibilities. The Odoo comparison is based on the community source code at github.com/odoo/odoo, branch 19.0, with the 18.0 addon list cross-checked through the GitHub API. File paths are linked.
+This write-up was compiled on 27 Oct 2026 from primary sources: the KIPs/KCCs repos, kaspa.org, Odoo's docs, and the STP-KAS master file. Every URL was checked with curl (all returned 200, except explorer.kaspa.org, which returns 403 to scripted requests). Use cases that are not implemented are labelled as possibilities. The Odoo comparison is based on the community source code at github.com/odoo/odoo, branch 19.0, with the 18.0 addon list cross-checked through the GitHub API. File paths are linked.
 
 ### Grok Build audit
 Not yet run. Waiting on stp to run [BUILD-AUDIT-PROMPT.md](BUILD-AUDIT-PROMPT.md) in Grok Build; its findings will be recorded here.
@@ -22,25 +22,14 @@ Not yet run. Waiting on stp to run [BUILD-AUDIT-PROMPT.md](BUILD-AUDIT-PROMPT.md
 
 **Odoo** is an ERP system with an open-source edition, developed by Odoo SA (Belgium) ([odoo.com](https://www.odoo.com)). It has an app store ([apps.odoo.com](https://apps.odoo.com)) and pluggable payment providers ([docs](https://www.odoo.com/documentation/18.0/applications/finance/payment_providers.html)).
 
-### Existing implementation: RRM Consultoría module
-
-[RRM Consultoría](https://www.rrmconsultoria.es/) is an ERP consultancy in Sabadell, Spain, that implements Odoo. On 26 Oct 2026 it announced a Kaspa wallet manager for Odoo and a module that certifies Odoo records on Kaspa ([thread](https://x.com/rrm_consultoria/status/2114734310578376709)). According to the thread:
-
-- It certifies purchase receipts, sales delivery notes, manufacturing orders and digital product IDs.
-- Each certificate carries a SHA-256 hash, a Kaspa transaction ID and a Merkle inclusion proof against a batch root that is anchored on Kaspa.
-- Reported by RRM: a batch of 50 certificates costs about 0.001816 KAS in network fees and typically confirms within 2 minutes ([post](https://x.com/i/status/2114734458679042480)). The batch address they published: [kaspa.stream](https://kaspa.stream/addresses/kaspa:qp6f50fv632mwfk9gjyrjxsvyvrzmxvm03s3vnjs8u5dwhe6sj9x5xlyumxry).
-- Stated by RRM: because of MiCA (EU Regulation 2023/1114), they host the wallet and provide it as a service ([post](https://x.com/i/status/2115128191560077807)).
-- Scope of the proof, per RRM: it shows the data matches the anchored snapshot; it does not prove the accuracy of the underlying records ([post](https://x.com/i/status/2114735361175757194)).
-- No public code repository or Odoo Apps listing was found on 27 Oct 2026. Contact: [rrmconsultoria.es/contacto](https://www.rrmconsultoria.es/contacto).
-
 ### Possible applications
-- Supply-chain provenance: batch-level links from raw materials to delivery (RRM's example).
+- Supply-chain provenance: batch-level links from raw materials to delivery, anchored on Kaspa.
 - Timestamped audit trails: tamper-evident hashes of records.
 - Cross-border invoice settlement: payments on a public network, verifiable by both parties.
 - Transfers between subsidiaries.
 - Small-value payments.
 
-Only the first two are implemented in RRM's module, according to RRM. The others are not existing Odoo features. See the [comparison](#comparison-with-odoo-modules) for how each one relates to existing Odoo modules.
+None of these is an existing Odoo feature. See the [comparison](#comparison-with-odoo-modules) for how each one relates to existing Odoo modules.
 
 ### Not yet available for Odoo
 - Tokens (assets, loyalty points): the fungible token standard KCC-20 has `Status: Final` ([kaspanet/kccs, kcc-0020.md](https://github.com/kaspanet/kccs)). Related KCC-23 is still Draft. Wallet and tooling support is incomplete ([master file](https://github.com/STP-KAS/kaspa-master-file)).
@@ -52,11 +41,11 @@ Basis: Odoo community source, branch 19.0. The 18.0 addon list was also checked;
 
 | Use case | Existing Odoo (community) | Status | Kaspa adds |
 |---|---|---|---|
-| Receiving payments | [`payment`](https://github.com/odoo/odoo/tree/19.0/addons/payment) framework plus about 25 `payment_*` providers (e.g. [`payment_stripe`](https://github.com/odoo/odoo/tree/19.0/addons/payment_stripe), [`payment_mollie`](https://github.com/odoo/odoo/tree/19.0/addons/payment_mollie), [`payment_custom`](https://github.com/odoo/odoo/blob/19.0/addons/payment_custom/__manifest__.py) for wire transfers). No crypto-asset provider in 18.0 or 19.0. | Gap | A `payment_*` provider for KAS. None exists publicly. RRM's wallet manager is not a payment provider. |
+| Receiving payments | [`payment`](https://github.com/odoo/odoo/tree/19.0/addons/payment) framework plus about 25 `payment_*` providers (e.g. [`payment_stripe`](https://github.com/odoo/odoo/tree/19.0/addons/payment_stripe), [`payment_mollie`](https://github.com/odoo/odoo/tree/19.0/addons/payment_mollie), [`payment_custom`](https://github.com/odoo/odoo/blob/19.0/addons/payment_custom/__manifest__.py) for wire transfers). No crypto-asset provider in 18.0 or 19.0. | Gap | A `payment_*` provider for KAS. None exists publicly. |
 | Multi-currency invoicing and reconciliation (fiat) | [`res_currency.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/res_currency.py), [`account_partial_reconcile.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_partial_reconcile.py), [`account_reconcile_model.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_reconcile_model.py) | Handled by Odoo | KAS as a currency, plus matching on-chain payments to invoices. Not implemented. |
 | EU e-invoicing | [`account_edi_ubl_cii`](https://github.com/odoo/odoo/tree/19.0/addons/account_edi_ubl_cii), [`account_peppol`](https://github.com/odoo/odoo/tree/19.0/addons/account_peppol) | Handled by Odoo | Optional external timestamp of the invoice hash. Peppol remains the regulated channel. |
 | Inalterability of journal entries | `inalterable_hash` and `secure_sequence_number` in [`account_move.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_move.py) (l.354–355); `restrict_mode_hash_table` in [`account_journal.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/models/account_journal.py); [`account_secure_entries_wizard.py`](https://github.com/odoo/odoo/blob/19.0/addons/account/wizard/account_secure_entries_wizard.py); [`l10n_fr_account`](https://github.com/odoo/odoo/tree/19.0/addons/l10n_fr_account) | Handled by Odoo | Odoo's hash chain is local to the database. Anchoring its root on Kaspa would add an external, independently verifiable timestamp. |
-| Lot / serial traceability | [`stock_lot.py`](https://github.com/odoo/odoo/blob/19.0/addons/stock/models/stock_lot.py), [`stock_traceability.py`](https://github.com/odoo/odoo/blob/19.0/addons/stock/report/stock_traceability.py), [`mrp`](https://github.com/odoo/odoo/tree/19.0/addons/mrp) | Handled by Odoo | Third-party-verifiable proof that the records existed in a given state at a given time (RRM's module). |
+| Lot / serial traceability | [`stock_lot.py`](https://github.com/odoo/odoo/blob/19.0/addons/stock/models/stock_lot.py), [`stock_traceability.py`](https://github.com/odoo/odoo/blob/19.0/addons/stock/report/stock_traceability.py), [`mrp`](https://github.com/odoo/odoo/tree/19.0/addons/mrp) | Handled by Odoo | Third-party-verifiable proof that the records existed in a given state at a given time |
 | Transfers between subsidiaries | No `inter_company*` module in the community repo (18.0/19.0) | Gap | On-chain transfers with public settlement. The accounting link is not implemented. |
 | Document signing / DMS | No `sign` or `documents` module in the community repo | Gap | Hash anchoring of signed documents. Not implemented. |
 
@@ -65,10 +54,9 @@ Basis: Odoo community source, branch 19.0. The 18.0 addon list was also checked;
 | Claim | Source |
 |---|---|
 | 10 blocks per second since Crescendo (it was 1 before) | [KIP-14 (Active)](https://github.com/kaspanet/kips/blob/master/kip-0014.md), [kaspa.org/lore](https://kaspa.org/lore) |
-| Fee data point: about 0.001816 KAS for a batch of 50 certificates (RRM's figure, one data point) | [RRM post](https://x.com/i/status/2114734458679042480) |
 | Proof-of-work consensus; no premine | [kaspa.org](https://kaspa.org), [master file](https://github.com/STP-KAS/kaspa-master-file) |
 | Transactions are publicly verifiable via explorers | [explorer.kaspa.org](https://explorer.kaspa.org), [kaspa.stream](https://kaspa.stream) |
-| Settlement is permissionless; a transaction moves value from sender to receiver directly on layer 1. The protocol checks signatures and scripts, not whether the key holder is a person, a business or a software agent. In an Odoo deployment, a hosted wallet service (as in RRM's setup) can still act as an intermediary. | [kaspa.org/lore](https://kaspa.org/lore) ("permissionless settlement"), [docs.kaspa.org](https://docs.kaspa.org) |
+| Settlement is permissionless; a transaction moves value from sender to receiver directly on layer 1. The protocol checks signatures and scripts, not whether the key holder is a person, a business or a software agent. In an Odoo deployment, a hosted wallet service can still act as an intermediary. | [kaspa.org/lore](https://kaspa.org/lore) ("permissionless settlement"), [docs.kaspa.org](https://docs.kaspa.org) |
 
 ## Outlook (not available now)
 
@@ -126,6 +114,6 @@ Links checked on 27 Oct 2026. Each one is followed by what you will find there.
 - [github.com/odoo/odoo](https://github.com/odoo/odoo): official source. Paths used in this report: [payment](https://github.com/odoo/odoo/tree/19.0/addons/payment) · [account](https://github.com/odoo/odoo/tree/19.0/addons/account) · [stock](https://github.com/odoo/odoo/tree/19.0/addons/stock) · [mrp](https://github.com/odoo/odoo/tree/19.0/addons/mrp) · [account_peppol](https://github.com/odoo/odoo/tree/19.0/addons/account_peppol) · [l10n_fr_account](https://github.com/odoo/odoo/tree/19.0/addons/l10n_fr_account).
 
 **This report**
-- [STP-KAS/kaspa-odoo](https://github.com/STP-KAS/kaspa-odoo) · RRM Consultoría: [site](https://www.rrmconsultoria.es/), [announcement thread](https://x.com/rrm_consultoria/status/2114734310578376709).
+- [STP-KAS/kaspa-odoo](https://github.com/STP-KAS/kaspa-odoo).
 
 This document contains no price information or financial advice.

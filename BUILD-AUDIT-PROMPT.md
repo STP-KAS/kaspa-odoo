@@ -8,22 +8,21 @@
 - Keep the README's disclaimer (the block quote under the intro line) exactly as it is. Do not change, move or remove it.
 - Facts only. Every statement needs a source link, preferably a primary one.
 - Professional and neutral. No marketing, no emotion, no price talk.
-- No secrets. No tags or releases. No force push. Only this repo. Do not post anywhere, and do not contact RRM, Odoo or the Kaspa Dollar team.
+- No secrets. No tags or releases. No force push. Only this repo. Do not post anywhere, and do not contact Odoo or the Kaspa Dollar team.
 - Never fake verification. If you are blocked (auth, access, an unreachable source), stop and report it in your section.
 
 **Sources to go through (all of them)**
-1. RRM Consultoría: the X thread https://x.com/rrm_consultoria/status/2114734310578376709 and its replies, the site https://www.rrmconsultoria.es/, and the batch address on https://kaspa.stream that they cite.
-2. Odoo:
+1. Odoo:
    - The source code at https://github.com/odoo/odoo, branches 18.0 and 19.0, with this as an analysis of the actual code rather than a skim: `addons/payment` and `payment_*`, `account` (multi-currency, reconciliation, the `inalterable_hash` / secure entries), `account_edi_ubl_cii`, `account_peppol`, `stock` lots and the traceability report, and `mrp`. Also check whether `inter_company`, `sign` and `documents` exist.
    - The docs at https://www.odoo.com/documentation and the app store at https://apps.odoo.com, including any crypto payment modules.
-3. Kaspa: https://kaspa.org and https://kaspa.org/lore, https://docs.kaspa.org, https://wiki.kaspa.org, https://research.kas.pa, and the kaspanet repos rusty-kaspa (including the `dagknight` branch), kips (KIP-14) and kccs (KCC-20 and KCC-23 status). Also check `consensus/core/src/constants.rs` in rusty-kaspa (`SOMPI_PER_KASPA`) for the glossary.
-4. The Kaspa master file: https://github.com/STP-KAS/kaspa-master-file
-5. Kaspa Dollar:
+2. Kaspa: https://kaspa.org and https://kaspa.org/lore, https://docs.kaspa.org, https://wiki.kaspa.org, https://research.kas.pa, and the kaspanet repos rusty-kaspa (including the `dagknight` branch), kips (KIP-14) and kccs (KCC-20 and KCC-23 status). Also check `consensus/core/src/constants.rs` in rusty-kaspa (`SOMPI_PER_KASPA`) for the glossary.
+3. The Kaspa master file: https://github.com/STP-KAS/kaspa-master-file
+4. Kaspa Dollar:
    - The X account https://x.com/KaspaDollar and its site https://kaspadollar.com.
    - Alexander Säfström: X https://x.com/asaefstroem and GitHub https://github.com/saefstroem.
    - Michael Sutton: X https://x.com/michaelsuttonil.
    - Check the status, the mechanism, the fundraising figures and any whitepaper or code.
-6. Every other URL in the README, including the explorers.
+5. Every other URL in the README, including the explorers.
 
 **Task**
 1. Build your own version of the Odoo comparison, using only the binary labels "Gap" or "Handled by Odoo". Where Odoo handles something locally and Kaspa would add an external proof, label it "Handled by Odoo" and state the addition. Note every row where you disagree with the README.
