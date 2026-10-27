@@ -8,7 +8,7 @@ Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA or the Kaspa deve
 
 Kaspa is a proof-of-work blockDAG that produces 10 blocks per second on mainnet. kaspa.org/lore names permissionless settlement among the properties it pairs with proof of work. Odoo's community code (branches 18.0 and 19.0) contains no Kaspa integration and no crypto-asset payment provider. Against that code, three rows are gaps: a KAS payment provider, transfers between subsidiaries, and document signing. Sign and Documents are Enterprise-only on Odoo's editions page. The inter-company user doc describes the feature and does not name an edition. Where Odoo already handles multi-currency invoicing, journal hashes, lot traceability, or e-invoicing, Kaspa would add an external timestamp. An 8-decimal KAS unit does not fit Odoo's currency rounding field.
 
-Kaspa core: [github.com/kaspanet](https://github.com/kaspanet). Reliable sources: [kaspa.org](https://kaspa.org), [docs.kaspa.org](https://docs.kaspa.org), [research.kas.pa](https://research.kas.pa), [qa.kas.pa](https://qa.kas.pa/), [Kaspa Discord](https://discord.gg/kaspa), [t.me/kasparnd](https://t.me/kasparnd), [kaspa.news](https://kaspa.news).
+Kaspa core: [github.com/kaspanet](https://github.com/kaspanet). Reliable sources: [kaspa.org](https://kaspa.org), [docs.kaspa.org](https://docs.kaspa.org), [research.kas.pa](https://research.kas.pa), [qa.kas.pa](https://qa.kas.pa/), [Kaspa Discord](https://discord.gg/kaspa), [t.me/kasparnd](https://t.me/kasparnd), [kaspa.news](https://kaspa.news), [Kaspa Explained](https://kaspaexplained.com/status).
 
 ## Audits
 
