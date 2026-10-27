@@ -2,6 +2,8 @@
 
 Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA, RRM Consultoría or the Kaspa developers. Each statement links to its source. Review notes: [Grok bots audit](#grok-bots-audit). Terms: [Glossary](#glossary).
 
+> **Disclaimer.** The author is not a Kaspa contributor and does not take part in Kaspa development in any way. They are an interested individual who tests on Kaspa's testnet. Kaspa is open source ([kaspanet on GitHub](https://github.com/kaspanet)) and decentralized: anyone can build on it.
+
 ## Summary
 
 Kaspa is a proof-of-work cryptocurrency network that produces 10 blocks per second. Its transactions can be checked publicly by anyone, without an intermediary. For Odoo, one implementation is public so far: RRM Consultoría, an ERP consultancy that implements Odoo, has announced an add-on that manages a Kaspa wallet and anchors hashes of Odoo records (receipts, delivery notes, manufacturing orders) on Kaspa. It has not been verified beyond its own posts and screenshots. Compared with the Odoo community code, Kaspa could fill three gaps: a KAS payment provider, transfers between subsidiaries, and anchoring of signed documents. In areas Odoo already handles, such as the hash chain on journal entries, lot traceability and e-invoicing, Kaspa would add an external, independently verifiable timestamp rather than replace anything. Several items are not available yet: stablecoins (including the Kaspa Dollar initiative, which is still in fundraising), mature tooling for tokens and escrow, and the next consensus upgrade, DAGKnight. These are worth following for Odoo payment and settlement use cases, but none of them is production-ready today.
