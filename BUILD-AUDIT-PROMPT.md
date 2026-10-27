@@ -7,7 +7,7 @@
 - No secrets, keys or tokens in any file or commit.
 - No tags. No releases. No force push. Normal commits to `main` only.
 - Do not post anywhere else, and do not contact RRM or Odoo.
-- No price talk or hype.
+- Professional, factual tone: no promotional or emotional language, no price information.
 
 **Task**
 1. Read every file in the repo.
@@ -18,7 +18,7 @@
    - Check whether any public RRM repo or Odoo Apps listing exists by now.
 3. Flag errors, overclaims, unsourced lines and outdated statements. Fix them in place, with sources.
 4. Do your own research. Add what is missing and useful to Odoo users, sourced. Examples: how an Odoo payment provider module would accept KAS, wallet and custody options, the MiCA context, and existing Kaspa payment or merchant tools.
-5. Replace the "Pending" line under `## Grok bots audit` → `### Grok Build audit` in README.md with:
+5. Replace the "Not yet run" line under `## Grok bots audit` → `### Grok Build audit` in README.md with:
    - **Opinion:** 3–5 lines.
    - **Findings:** a list, each with a source.
    - **Fixes made:** what you changed.
