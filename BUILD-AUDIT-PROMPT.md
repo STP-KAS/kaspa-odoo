@@ -1,30 +1,43 @@
-# GROK BUILD PROMPT — Audit and extend STP-KAS/kaspa-odoo
+# GROK BUILD PROMPT — Independent audit of STP-KAS/kaspa-odoo
 
-**Scope:** only https://github.com/STP-KAS/kaspa-odoo, branch `main`. Pull first and continue from the current README. Do not rewrite it from scratch, and keep its factual, neutral tone.
+**Scope:** only https://github.com/STP-KAS/kaspa-odoo, branch `main`. Pull first. Your output goes in your own section, `## Grok bots audit` → `### Grok Build audit` in README.md. Do not edit the "TN10 ops2 view" part, and keep the factual, neutral tone throughout.
+
+**Goal:** repeat TN10 ops2's exercise independently. Open every source yourself and form your own conclusions. Do not rely on the README's wording as evidence.
 
 **Rules**
-- Facts only. Every statement must have a source, preferably a primary one: github.com/odoo/odoo (file paths, branches 18.0/19.0), odoo.com docs, kaspanet repos (KIPs, KCCs, rusty-kaspa), kaspa.org, docs.kaspa.org, research.kas.pa, and https://github.com/STP-KAS/kaspa-master-file.
+- Facts only. Every statement needs a source link, preferably a primary one.
 - Professional and neutral. No marketing, no emotion, no price talk.
-- No secrets. No tags or releases. No force push. Only this repo. Do not post anywhere.
-- Never fake verification. If you are blocked (auth, access, an unreachable source), stop and report.
+- No secrets. No tags or releases. No force push. Only this repo. Do not post anywhere, and do not contact RRM, Odoo or the Kaspa Dollar team.
+- Never fake verification. If you are blocked (auth, access, an unreachable source), stop and report it in your section.
+
+**Sources to go through (all of them)**
+1. RRM Consultoría: the X thread https://x.com/rrm_consultoria/status/2114734310578376709 and its replies, the site https://www.rrmconsultoria.es/, and the batch address on https://kaspa.stream that they cite.
+2. Odoo:
+   - The source code at https://github.com/odoo/odoo, branches 18.0 and 19.0, with this as an analysis of the actual code rather than a skim: `addons/payment` and `payment_*`, `account` (multi-currency, reconciliation, the `inalterable_hash` / secure entries), `account_edi_ubl_cii`, `account_peppol`, `stock` lots and the traceability report, and `mrp`. Also check whether `inter_company`, `sign` and `documents` exist.
+   - The docs at https://www.odoo.com/documentation and the app store at https://apps.odoo.com, including any crypto payment modules.
+3. Kaspa: https://kaspa.org and https://kaspa.org/lore, https://docs.kaspa.org, https://wiki.kaspa.org, https://research.kas.pa, and the kaspanet repos rusty-kaspa (including the `dagknight` branch), kips (KIP-14) and kccs (KCC-20 and KCC-23 status).
+4. The Kaspa master file: https://github.com/STP-KAS/kaspa-master-file
+5. Kaspa Dollar:
+   - The X account https://x.com/KaspaDollar and its site https://kaspadollar.com.
+   - Alexander Säfström: X https://x.com/asaefstroem and GitHub https://github.com/saefstroem.
+   - Michael Sutton: X https://x.com/michaelsuttonil.
+   - Check the status, the mechanism, the fundraising figures and any whitepaper or code.
+6. Every other URL in the README, including the explorers.
 
 **Task**
-1. **Odoo module comparison.** Verify every row and file link in "Comparison with Odoo modules" against the odoo/odoo source. Extend it where useful, for example:
-   - Odoo's `payment` provider interface: what a KAS provider would need to implement.
-   - Currency rounding and decimals in `res.currency` for an 8-decimal asset.
-   - Whether `inter_company`, `sign` and `documents` are Enterprise-only, with an odoo.com source.
-   - Any public third-party crypto payment modules on apps.odoo.com.
-
-   Status labels are binary: use only "Gap" or "Handled by Odoo". Do not use partial or half-covered labels. Where Odoo handles something locally and Kaspa adds an external proof, label it "Handled by Odoo" and state the addition factually in the "Kaspa adds" column. Correct labels if needed.
-2. **Stablecoin outlook.** Verify and extend the stablecoin item: a Kaspa dollar, multiple stablecoins, a Tether-like issuer. Keep it future, not current. Report only what has a primary source, say who stated it and when, and mark everything else "not confirmed".
-3. **Hard fork note.** Verify the name and status of the next hard fork, currently given as DAGKnight per kaspa.org/lore. Check the rusty-kaspa `dagknight` branch, KIPs and research.kas.pa. No dates without a source.
-4. Re-check every URL in the repo and fix or drop dead links.
-5. Replace the text under `## Grok bots audit` → `### Grok Build audit` with your own take:
+1. Build your own version of the Odoo comparison, using only the binary labels "Gap" or "Handled by Odoo". Where Odoo handles something locally and Kaspa would add an external proof, label it "Handled by Odoo" and state the addition. Note every row where you disagree with the README.
+2. Check every claim in What, Relevant properties, Outlook (DAGKnight, stablecoins, the Kaspa Dollar side note) and Sources. Mark each one as confirmed, wrong or unsourced, with your source.
+3. Check every URL and list any that are dead.
+4. Write your section using these parts:
    - **Opinion:** 3–5 lines.
+   - **Comparison:** your table.
    - **Findings:** each with a source.
-   - **Fixes made.**
-   - **Suggestions / additions.**
+   - **Corrections needed:** for each, the claim, why it's wrong, and the source.
+   - **Suggestions / additions:** with sources.
+   - **Sources checked:** a list, each with the date you checked it.
    - The date and your commit SHA(s).
 
-   Keep the "TN10 ops2 view" part unchanged.
-6. Commit with clear messages and push to `main`.
+   You may also fix clear factual errors elsewhere in the README. If you do, list every such edit under "Fixes made" in your section.
+5. Commit with clear messages and push to `main`.
+
+Quality over speed. You have full authority within this repo.
