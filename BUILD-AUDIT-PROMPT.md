@@ -15,7 +15,7 @@
    - Whether `inter_company`, `sign` and `documents` are Enterprise-only, with an odoo.com source.
    - Any public third-party crypto payment modules on apps.odoo.com.
 
-   Correct the coverage labels if needed.
+   Status labels are binary: use only "Gap" or "Handled by Odoo". Do not use partial or half-covered labels. Where Odoo handles something locally and Kaspa adds an external proof, label it "Handled by Odoo" and state the addition factually in the "Kaspa adds" column. Correct labels if needed.
 2. **Stablecoin outlook.** Verify and extend the stablecoin item: a Kaspa dollar, multiple stablecoins, a Tether-like issuer. Keep it future, not current. Report only what has a primary source, say who stated it and when, and mark everything else "not confirmed".
 3. **Hard fork note.** Verify the name and status of the next hard fork, currently given as DAGKnight per kaspa.org/lore. Check the rusty-kaspa `dagknight` branch, KIPs and research.kas.pa. No dates without a source.
 4. Re-check every URL in the repo and fix or drop dead links.
