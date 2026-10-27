@@ -36,7 +36,7 @@ Odoo is a modular ERP: each business function is an app sharing one database, so
 | HR | [`hr`](https://github.com/odoo/odoo/tree/19.0/addons/hr) |
 | Payments | [`payment`](https://github.com/odoo/odoo/tree/19.0/addons/payment) plus `payment_*` providers |
 
-Odoo's about page gives its user range (see above); it does not break customers down by sector.
+The user range above is from Odoo's about page.
 
 ## Gaps and possible solutions
 
