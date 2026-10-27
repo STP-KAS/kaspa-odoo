@@ -4,7 +4,7 @@ Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA or the Kaspa deve
 
 > **Disclaimer.** The author is not a Kaspa contributor and does not take part in Kaspa development in any way. They are an interested individual who tests on Kaspa's testnet. Kaspa is open source ([official Kaspa GitHub organization](https://github.com/kaspanet)) and decentralized: anyone can build on it.
 
-**Why this exists.** The author's brother runs a small restaurant company that is an Odoo customer. That is why the author wanted to look at how Kaspa could potentially help Odoo.
+**Why this exists.** The author's brother runs a small restaurant company that is an Odoo customer. That raised a simple question: whether, and how, a decentralized proof-of-work network like Kaspa could serve Odoo and its users. This is an exploration, not a pitch, a request or a sales effort. Odoo may well conclude that it is not useful, and that is a valid answer.
 
 ## Summary
 
@@ -86,7 +86,7 @@ Status is binary: **Gap** (no community module covers it) or **Handled by Odoo**
 - **Odoo today:** no escrow module in community.
 - **Possible solution:** covenant scripts ([KIP-17](https://github.com/kaspanet/kips/blob/master/kip-0017.md)) holding funds until delivery is confirmed.
 
-## How Kaspa could help Odoo and its customers
+## How Kaspa could serve Odoo and its customers
 
 - **For Odoo as a vendor:** a maintained KAS payment provider and an optional anchoring service for the existing hash chain, traceability and documents, alongside current providers.
 - **For Odoo customers:** Odoo is extensible, so a customer or partner can build or install a custom or third-party module on their own initiative ([apps.odoo.com](https://apps.odoo.com)).
