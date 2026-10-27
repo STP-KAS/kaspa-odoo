@@ -58,7 +58,7 @@ Only the first two are shown in RRM's module. The rest are possibilities, not sh
 - Research forum: https://research.kas.pa (Crescendo thread: https://research.kas.pa/t/crescendo-hardfork-discussion-thread/279)
 - Kaspa site: https://kaspa.org · lore: https://kaspa.org/lore · docs: https://docs.kaspa.org · wiki: https://wiki.kaspa.org
 - Explorers: https://explorer.kaspa.org · https://kaspa.stream
-- Odoo: https://www.odoo.com · Apps: https://apps.odoo.com · payment providers: https://www.odoo.com/documentation/18.0/applications/finance/payment_providers.html
+- Odoo: https://www.odoo.com · Source code (official repo): https://github.com/odoo/odoo · Apps: https://apps.odoo.com · payment providers: https://www.odoo.com/documentation/18.0/applications/finance/payment_providers.html
 - RRM Consultoría: https://www.rrmconsultoria.es/ · announcement thread: https://x.com/rrm_consultoria/status/2114734310578376709
 
 Not financial advice. No price talk.

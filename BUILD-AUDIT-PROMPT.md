@@ -3,7 +3,7 @@
 **Scope:** only the repo https://github.com/STP-KAS/kaspa-odoo (branch `main`). Do not touch any other repo.
 
 **Rules**
-- Facts only. Every claim must have a source link, primary sources preferred: kaspanet repos (KIPs, KCCs, rusty-kaspa), kaspa.org, docs.kaspa.org, research.kas.pa, odoo.com docs, the RRM Consultoría site and X thread, and https://github.com/STP-KAS/kaspa-master-file.
+- Facts only. Every claim must have a source link, primary sources preferred: kaspanet repos (KIPs, KCCs, rusty-kaspa), kaspa.org, docs.kaspa.org, research.kas.pa, odoo.com docs, the official Odoo source repo https://github.com/odoo/odoo, the RRM Consultoría site and X thread, and https://github.com/STP-KAS/kaspa-master-file.
 - No secrets, keys or tokens in any file or commit.
 - No tags. No releases. No force push. Normal commits to `main` only.
 - Do not post anywhere else, and do not contact RRM or Odoo.
