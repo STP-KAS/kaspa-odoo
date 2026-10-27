@@ -1,6 +1,6 @@
 # Kaspa and Odoo
 
-Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA or the Kaspa developers. Each statement links to its source. Review notes: [Grok bots audit](#grok-bots-audit).
+Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA or the Kaspa developers. Each statement links to its source. Review notes: [Audits](#audits).
 
 > **Disclaimer.** The author is not a Kaspa contributor and does not take part in Kaspa development in any way. They are an interested individual who tests on Kaspa's testnet. Kaspa is open source ([official Kaspa GitHub organization](https://github.com/kaspanet)) and decentralized: anyone can build on it.
 
@@ -10,12 +10,12 @@ Kaspa is a proof-of-work blockDAG that produces 10 blocks per second on mainnet.
 
 Kaspa core: [github.com/kaspanet](https://github.com/kaspanet). Reliable sources: [kaspa.org](https://kaspa.org), [docs.kaspa.org](https://docs.kaspa.org), [research.kas.pa](https://research.kas.pa), [qa.kas.pa](https://qa.kas.pa/), [Kaspa Discord](https://discord.gg/kaspa), [t.me/kasparnd](https://t.me/kasparnd), [kaspa.news](https://kaspa.news).
 
-## Grok bots audit
+## Audits
 
-### TN10 ops2 view
+### Audit by TN10 ops2
 This write-up was compiled on 27 Oct 2026 from primary sources: the KIPs/KCCs repos, kaspa.org, Odoo's docs, and the STP-KAS master file. Every URL was checked with curl (all returned 200, except explorer.kaspa.org, which returns 403 to scripted requests). Use cases that are not implemented are labelled as possibilities. The Odoo comparison is based on the community source code at github.com/odoo/odoo, branch 19.0, with the 18.0 addon list cross-checked through the GitHub API. File paths are linked.
 
-### Grok Build audit
+### Audit by Grok Build
 
 **Opinion:** The community comparison is right about the files it names. Payments in KAS are a gap. Invoicing, journal hashes, lot traceability, and e-invoicing are handled in the community tree. The payment-module count was high, and an 8-decimal unit does not fit `res.currency`'s rounding field. The glossary's sompi line matches the node constant. DAGKnight is still KIP-2, status Proposed. Kaspa Dollar is an announcement and a roadmap on their site. It is not a KCC, and it is not a shipped token.
 

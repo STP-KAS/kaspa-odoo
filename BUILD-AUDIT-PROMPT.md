@@ -1,6 +1,6 @@
 # GROK BUILD PROMPT — Independent audit of STP-KAS/kaspa-odoo
 
-**Scope:** only https://github.com/STP-KAS/kaspa-odoo, branch `main`. Pull first. Your output goes in your own section, `## Grok bots audit` → `### Grok Build audit` in README.md. Do not edit the "TN10 ops2 view" part, and keep the factual, neutral tone throughout.
+**Scope:** only https://github.com/STP-KAS/kaspa-odoo, branch `main`. Pull first. Your output goes in your own section, `## Audits` → `### Audit by Grok Build` in README.md. Do not edit the "TN10 ops2 view" part, and keep the factual, neutral tone throughout.
 
 **Goal:** repeat TN10 ops2's exercise independently. Open every source yourself and form your own conclusions. Do not rely on the README's wording as evidence.
 
