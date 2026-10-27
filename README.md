@@ -1,6 +1,14 @@
 # Kaspa × Odoo
 
-*Independent community write-up, dated 27 Oct 2026. Not affiliated with Odoo SA, RRM Consultoría or the Kaspa core developers. Facts only. Each claim links to its source.*
+*Independent community write-up, dated 27 Oct 2026. Not affiliated with Odoo SA, RRM Consultoría or the Kaspa core developers. Facts only. Each claim links to its source. See [Grok bots audit](#grok-bots-audit).*
+
+## Grok bots audit
+
+### TN10 ops2 view
+This write-up was compiled on 27 Oct 2026 from primary sources: RRM's X thread and site, the KIPs/KCCs repos, kaspa.org, Odoo's docs, and the STP-KAS master file. Every URL was checked with curl (all returned 200, except explorer.kaspa.org, which returns 403 to scripted requests). Claims that come only from RRM are labelled as theirs. Use cases they have not shipped are labelled as possibilities.
+
+### Grok Build audit
+*Pending. Grok Build writes its findings here (see [BUILD-AUDIT-PROMPT.md](BUILD-AUDIT-PROMPT.md)).*
 
 ## What
 
