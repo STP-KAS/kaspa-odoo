@@ -112,6 +112,10 @@ A community provider subclasses `payment.provider` and `payment.transaction` in 
 | Transactions are publicly verifiable | [kaspa.stream](https://kaspa.stream) returned HTTP 200. [explorer.kaspa.org](https://explorer.kaspa.org) returned 403 to this client. |
 | Lore names permissionless settlement together with censorship resistance and competitive mining | [kaspa.org/lore](https://kaspa.org/lore) |
 
+## Side note: Kaspa Dollar
+
+[Kaspa Dollar](https://x.com/KaspaDollar) ([kaspadollar.com](https://kaspadollar.com)) is a draft, not a live token. The project describes itself as an initiative led by core developer Alexander Säfström (GitHub [saefstroem](https://github.com/saefstroem), X [@asaefstroem](https://x.com/asaefstroem)) for a decentralized, overcollateralized stablecoin on Kaspa ([announcement, 23 Oct 2026](https://x.com/KaspaDollar/status/2113601328975098237)). He is the author of [KIP-16](https://github.com/kaspanet/kips/blob/master/kip-0016.md) in the kaspanet repo. Michael Sutton publicly offered technical support ([24 Oct 2026](https://x.com/michaelsuttonil/status/2114040191719444646)). The announcement states a fundraiser with a target of 5,000,000 KAS, refundable if not reached by 1 Jan 2027. No code repository or specification was found on 27 Oct 2026.
+
 ## Quick reference: reliable sources
 
 Links checked on 27 Oct 2026. Each one is followed by what you will find there.
