@@ -86,17 +86,44 @@ Basis: Odoo community source, branch 19.0. The 18.0 addon list was also checked;
 - **MiCA:** the EU regulation on markets in crypto-assets (Regulation (EU) 2023/1114).
 - **Peppol:** the e-invoicing network used for EU e-invoicing, supported in Odoo by `account_peppol`.
 
-## Sources and references
-- This repository: https://github.com/STP-KAS/kaspa-odoo
-- Kaspa master file: https://github.com/STP-KAS/kaspa-master-file
-- kaspanet GitHub org: https://github.com/kaspanet. "Rusty Kaspa" is the Rust node, https://github.com/kaspanet/rusty-kaspa
-- KIPs (Kaspa Improvement Proposals): https://github.com/kaspanet/kips. KCCs (token and contract conventions): https://github.com/kaspanet/kccs
-- Core developers: Michael Sutton ( [GitHub](https://github.com/michaelsutton), [X](https://x.com/michaelsuttonil)). For a fuller list, see the "Who" section of the master file and the kaspanet contributor graphs. "Core" is not a formal title.
-- Research forum: https://research.kas.pa (Crescendo thread: https://research.kas.pa/t/crescendo-hardfork-discussion-thread/279)
-- Kaspa site: https://kaspa.org · lore: https://kaspa.org/lore · docs: https://docs.kaspa.org · wiki: https://wiki.kaspa.org
-- Explorers: https://explorer.kaspa.org · https://kaspa.stream
-- Odoo: https://www.odoo.com · Source code (official repo): https://github.com/odoo/odoo · Apps: https://apps.odoo.com · payment providers: https://www.odoo.com/documentation/18.0/applications/finance/payment_providers.html
-- Odoo source paths used: https://github.com/odoo/odoo/tree/19.0/addons/payment · https://github.com/odoo/odoo/tree/19.0/addons/account · https://github.com/odoo/odoo/tree/19.0/addons/stock · https://github.com/odoo/odoo/tree/19.0/addons/mrp · https://github.com/odoo/odoo/tree/19.0/addons/account_peppol · https://github.com/odoo/odoo/tree/19.0/addons/l10n_fr_account
-- RRM Consultoría: https://www.rrmconsultoria.es/ · announcement thread: https://x.com/rrm_consultoria/status/2114734310578376709
+## Quick reference: reliable sources
+
+Links checked on 27 Oct 2026. Each one is followed by what you will find there.
+
+**Official Kaspa**
+- [kaspa.org](https://kaspa.org): project site.
+- [kaspa.org/lore](https://kaspa.org/lore): history and upgrade status (Crescendo, Toccata, DAGKnight).
+- [github.com/kaspanet](https://github.com/kaspanet): official GitHub organisation.
+- [kaspanet/rusty-kaspa](https://github.com/kaspanet/rusty-kaspa): the Rust node ("Rusty Kaspa").
+- [kaspanet/kips](https://github.com/kaspanet/kips): Kaspa Improvement Proposals (protocol changes, e.g. KIP-14 Crescendo).
+
+**Docs and research**
+- [docs.kaspa.org](https://docs.kaspa.org): official documentation; start here.
+- [wiki.kaspa.org](https://wiki.kaspa.org): community wiki.
+- [research.kas.pa](https://research.kas.pa): protocol research forum ([Crescendo thread](https://research.kas.pa/t/crescendo-hardfork-discussion-thread/279)).
+- [kaspaexplained.com/status](https://kaspaexplained.com/status): community status page of what is live and what is not ([source](https://github.com/parker2017code/kaspa-explained)). Read it alongside kaspa.org.
+- [Kaspa master file](https://github.com/STP-KAS/kaspa-master-file): sourced community fact base (STP-KAS), including the "Who" list of contributors. "Core" is not a formal title. Example: Michael Sutton ([GitHub](https://github.com/michaelsutton), [X](https://x.com/michaelsuttonil)).
+
+**Community help**
+- [Kaspa Discord](https://discord.gg/kaspa): help desk with topic channels (wallets, development, merchants, …).
+- [qa.kas.pa](https://qa.kas.pa/): written Q&A.
+- [Kaspa R&D Telegram](https://t.me/kasparnd): core R&D channel, mostly read-only. Recaps are published on [kaspa.news](https://kaspa.news).
+
+**Explorers**
+- [explorer.kaspa.org](https://explorer.kaspa.org) · [kaspa.stream](https://kaspa.stream): look up transactions and addresses.
+
+**Wallets and tools**
+- None are listed here yet. Ask in the Discord wallets channel, or see docs.kaspa.org.
+
+**Tokens and stablecoins**
+- [kaspanet/kccs](https://github.com/kaspanet/kccs): token and contract conventions (KCC-20 Final, KCC-23 Draft).
+- [Kaspa Dollar](https://x.com/KaspaDollar) · [kaspadollar.com](https://kaspadollar.com): stablecoin initiative, in fundraising, not live.
+
+**Odoo**
+- [odoo.com](https://www.odoo.com) · [apps.odoo.com](https://apps.odoo.com) · [payment providers docs](https://www.odoo.com/documentation/18.0/applications/finance/payment_providers.html).
+- [github.com/odoo/odoo](https://github.com/odoo/odoo): official source. Paths used in this report: [payment](https://github.com/odoo/odoo/tree/19.0/addons/payment) · [account](https://github.com/odoo/odoo/tree/19.0/addons/account) · [stock](https://github.com/odoo/odoo/tree/19.0/addons/stock) · [mrp](https://github.com/odoo/odoo/tree/19.0/addons/mrp) · [account_peppol](https://github.com/odoo/odoo/tree/19.0/addons/account_peppol) · [l10n_fr_account](https://github.com/odoo/odoo/tree/19.0/addons/l10n_fr_account).
+
+**This report**
+- [STP-KAS/kaspa-odoo](https://github.com/STP-KAS/kaspa-odoo) · RRM Consultoría: [site](https://www.rrmconsultoria.es/), [announcement thread](https://x.com/rrm_consultoria/status/2114734310578376709).
 
 This document contains no price information or financial advice.
