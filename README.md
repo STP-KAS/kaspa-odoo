@@ -1,6 +1,10 @@
 # Kaspa and Odoo
 
-Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA, RRM Consultoría or the Kaspa developers. Each statement links to its source. Review notes: [Grok bots audit](#grok-bots-audit).
+Independent write-up, 27 Oct 2026. Not affiliated with Odoo SA, RRM Consultoría or the Kaspa developers. Each statement links to its source. Review notes: [Grok bots audit](#grok-bots-audit). Terms: [Glossary](#glossary).
+
+## Summary
+
+Kaspa is a proof-of-work cryptocurrency network that produces 10 blocks per second. Its transactions can be checked publicly by anyone, without an intermediary. For Odoo, one implementation is public so far: RRM Consultoría, an Odoo partner, has announced an add-on that manages a Kaspa wallet and anchors hashes of Odoo records (receipts, delivery notes, manufacturing orders) on Kaspa. It has not been verified beyond the partner's own posts and screenshots. Compared with the Odoo community code, Kaspa could fill three gaps: a KAS payment provider, transfers between subsidiaries, and anchoring of signed documents. In areas Odoo already handles, such as the hash chain on journal entries, lot traceability and e-invoicing, Kaspa would add an external, independently verifiable timestamp rather than replace anything. Several items are not available yet: stablecoins (including the Kaspa Dollar initiative, which is still in fundraising), mature tooling for tokens and escrow, and the next consensus upgrade, DAGKnight. These are worth following for Odoo payment and settlement use cases, but none of them is production-ready today.
 
 ## Grok bots audit
 
@@ -34,7 +38,7 @@ Not yet run. Waiting on stp to run [BUILD-AUDIT-PROMPT.md](BUILD-AUDIT-PROMPT.md
 - Transfers between subsidiaries.
 - Small-value payments.
 
-Only the first two are implemented in RRM's module. The others are not existing Odoo features.
+Only the first two are implemented in RRM's module, according to RRM. The others are not existing Odoo features. See the [comparison](#comparison-with-odoo-modules) for how each one relates to existing Odoo modules.
 
 ### Not yet available for Odoo
 - Tokens (assets, loyalty points): the fungible token standard KCC-20 has `Status: Final` ([kaspanet/kccs, kcc-0020.md](https://github.com/kaspanet/kccs)). Related KCC-23 is still Draft. Wallet and tooling support is incomplete ([master file](https://github.com/STP-KAS/kaspa-master-file)).
@@ -54,11 +58,6 @@ Basis: Odoo community source, branch 19.0. The 18.0 addon list was also checked;
 | Transfers between subsidiaries | No `inter_company*` module in the community repo (18.0/19.0) | Gap | On-chain transfers with public settlement. The accounting link is not implemented. |
 | Document signing / DMS | No `sign` or `documents` module in the community repo | Gap | Hash anchoring of signed documents. Not implemented. |
 
-### README claims reviewed
-- "Settlement on layer 1 without an intermediary processor": accurate for the transfer itself. In an Odoo setup a hosted wallet provider (as with RRM) can still be an intermediary.
-- "Only the first two are implemented in RRM's module": consistent with the thread. No code is public, so this is unverified beyond RRM's posts and screenshots.
-- No other corrections found.
-
 ## Relevant properties
 
 | Claim | Source |
@@ -67,14 +66,25 @@ Basis: Odoo community source, branch 19.0. The 18.0 addon list was also checked;
 | Fee data point: about 0.001816 KAS for a batch of 50 certificates (RRM's figure, one data point) | [RRM post](https://x.com/i/status/2114734458679042480) |
 | Proof-of-work consensus; no premine | [kaspa.org](https://kaspa.org), [master file](https://github.com/STP-KAS/kaspa-master-file) |
 | Transactions are publicly verifiable via explorers | [explorer.kaspa.org](https://explorer.kaspa.org), [kaspa.stream](https://kaspa.stream) |
-| Settlement is permissionless; a transaction moves value from sender to receiver directly on layer 1. The protocol checks signatures and scripts, not whether the key holder is a person, a business or a software agent. | [kaspa.org/lore](https://kaspa.org/lore) ("permissionless settlement"), [docs.kaspa.org](https://docs.kaspa.org) |
-| Settlement on layer 1 without an intermediary processor | [kaspa.org](https://kaspa.org) |
+| Settlement is permissionless; a transaction moves value from sender to receiver directly on layer 1. The protocol checks signatures and scripts, not whether the key holder is a person, a business or a software agent. In an Odoo deployment, a hosted wallet service (as in RRM's setup) can still act as an intermediary. | [kaspa.org/lore](https://kaspa.org/lore) ("permissionless settlement"), [docs.kaspa.org](https://docs.kaspa.org) |
 
 ## Outlook (not available now)
 
 - **Next hard fork: DAGKnight.** kaspa.org/lore describes the "DAGKnight hardfork" as the consensus upgrade that follows Toccata, with block times targeted at 40–25 ms, and lists a separate later "2027 hardfork" for 100 blocks per second ([kaspa.org/lore](https://kaspa.org/lore)). The master file records DAGKnight as not shipped, with development on the rusty-kaspa `dagknight` branch ([master file](https://github.com/STP-KAS/kaspa-master-file), [rusty-kaspa](https://github.com/kaspanet/rusty-kaspa)). No mainnet date is confirmed. Toccata (L1 covenants) is already live, at DAA score 474165565 per the master file.
-- **Stablecoins on Kaspa.** KCC-20 (fungible token covenant) is `Status: Final` ([kaspanet/kccs](https://github.com/kaspanet/kccs)), which gives a standard that dollar-denominated tokens could use. On 27 Oct 2026 no primary source (KIP, KCC, kaspanet repo or issuer announcement) was found that confirms a "Kaspa dollar", a Tether (USDT) issuance on Kaspa L1, or several stablecoins. The master file lists a spendable L1 stablecoin as not shipped. It also notes that bridged USDT keeps the issuer's freeze key. This item is not confirmed.
+- **Stablecoins on Kaspa.** KCC-20 (fungible token covenant) is `Status: Final` ([kaspanet/kccs](https://github.com/kaspanet/kccs)), which gives a standard that dollar-denominated tokens could use. On 27 Oct 2026 there was no live stablecoin on Kaspa L1. No KIP, KCC or kaspanet repo describes one, and no Tether (USDT) issuance on Kaspa L1 was found. The master file lists a spendable L1 stablecoin as not shipped. It also notes that bridged USDT keeps the issuer's freeze key. One initiative has been announced; see the side note below.
   - *Side note (27 Oct 2026):* [Kaspa Dollar](https://x.com/KaspaDollar) ([kaspadollar.com](https://kaspadollar.com)). Draft / not live; noted for future relevance. The project describes itself as "an initiative led by core developer @asaefstroem" (Alexander Säfström; GitHub [saefstroem](https://github.com/saefstroem), X [@asaefstroem](https://x.com/asaefstroem)) to build a decentralized, overcollateralized stablecoin on Kaspa ([announcement, 23 Oct 2026](https://x.com/KaspaDollar/status/2113601328975098237)). Michael Sutton publicly offered technical support ([24 Oct 2026](https://x.com/michaelsuttonil/status/2114040191719444646)). Status on 27 Oct 2026: a donation fundraiser with a target of 5,000,000 KAS, refundable if not reached by 1 Jan 2027. No whitepaper, code or contract has been published yet.
+
+## Glossary
+
+- **blockDAG:** a ledger in which several blocks can be created in parallel and are then ordered (Kaspa's GHOSTDAG protocol), instead of a single chain.
+- **BPS:** blocks per second. Kaspa mainnet runs at 10.
+- **KAS:** Kaspa's native coin. 1 KAS = 100,000,000 sompi, the smallest unit (8 decimals; [`SOMPI_PER_KASPA`](https://github.com/kaspanet/rusty-kaspa/blob/master/consensus/core/src/constants.rs)).
+- **UTXO:** unspent transaction output. Kaspa tracks coins as discrete outputs, as Bitcoin does, rather than as account balances.
+- **Covenant:** a rule attached to an output that restricts how it can be spent. Live on L1 since the Toccata upgrade.
+- **KCC-20:** the Kaspa convention for fungible tokens implemented with covenants (`Status: Final` in kaspanet/kccs).
+- **Anchoring / Merkle proof:** many record hashes are combined into one root hash, which is written in a Kaspa transaction. A Merkle proof shows that one record's hash is part of that root.
+- **MiCA:** the EU regulation on markets in crypto-assets (Regulation (EU) 2023/1114).
+- **Peppol:** the e-invoicing network used for EU e-invoicing, supported in Odoo by `account_peppol`.
 
 ## Sources and references
 - This repository: https://github.com/STP-KAS/kaspa-odoo
